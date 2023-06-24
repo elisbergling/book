@@ -1,8 +1,5 @@
-import 'package:book/firebase_options.dart';
 import 'package:book/screens/auth/first_screen.dart';
-import 'package:book/screens/home/home_screen.dart';
 import 'package:book/style/colors.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

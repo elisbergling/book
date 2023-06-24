@@ -18,17 +18,22 @@ class Chips {
         list = Lists.sortBy;
         break;
     }
-    return Wrap(
-      children: [
-        for (String item in list)
-          MyFilterChip(
-            isAddBook: isAddBook,
-            chip: MyChip(
-              type: type,
-              label: item,
+    return Padding(
+      padding: isAddBook
+          ? const EdgeInsets.symmetric(horizontal: 20)
+          : EdgeInsets.zero,
+      child: Wrap(
+        children: [
+          for (String item in list)
+            MyFilterChip(
+              isAddBook: isAddBook,
+              chip: MyChip(
+                type: type,
+                label: item,
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

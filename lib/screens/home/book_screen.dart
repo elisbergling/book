@@ -1,6 +1,14 @@
+import 'package:book/screens/auth/signup_screen_widgets/or_divider.dart';
+import 'package:book/screens/home/book_screen_widgets/expandeble_text.dart';
+import 'package:book/screens/home/book_screen_widgets/location_widget.dart';
+import 'package:book/screens/home/book_screen_widgets/retail_type_circle.dart';
 import 'package:book/style/colors.dart';
+import 'package:book/widgets/action_button.dart';
+import 'package:book/widgets/circular_button.dart';
 import 'package:book/widgets/heart_button.dart';
 import 'package:book/widgets/my_back_button.dart';
+import 'package:book/widgets/submit_button.dart';
+import 'package:book/widgets/white_text_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -13,6 +21,8 @@ class BookScreen extends HookWidget {
     final pageController = usePageController(initialPage: 0);
     final pictureIndexNotifier = useValueNotifier<int>(0);
     final backgroundTopOffset = useState(0.0);
+    final showAllBookDescription = useState(false);
+    final showAllInfoDescription = useState(false);
 
     useEffect(() {
       listener() {
@@ -104,11 +114,160 @@ class BookScreen extends HookWidget {
                 left: 0,
                 right: 0,
                 top: MediaQuery.of(context).size.width - 30,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Container(
-                    height: 1000,
-                    color: MyColors.blue,
+                child: Container(
+                  height: 1000,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: MyColors.black,
+                    boxShadow: const [
+                      BoxShadow(
+                        blurRadius: 50,
+                        color: MyColors.darkGrey,
+                        offset: Offset(0, 20),
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'Title',
+                                style: TextStyle(
+                                  color: MyColors.white,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'author',
+                                style: TextStyle(
+                                  color: MyColors.ligthGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: const [
+                              Text(
+                                '4,4',
+                                style: TextStyle(
+                                  color: MyColors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Icon(
+                                Icons.star_rounded,
+                                color: Colors.yellowAccent,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      const WhiteTextTitle(text: 'Location'),
+                      const LocationWidget(),
+                      const WhiteTextTitle(text: 'Book Description'),
+                      ExpandebleText(showAllText: showAllBookDescription),
+                      const WhiteTextTitle(text: 'Seller Info'),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Material(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          color: MyColors.darkGrey,
+                          child: InkWell(
+                            onTap: () {},
+                            child: Container(
+                              height: 80,
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.asset(
+                                      'lib/assets/images/3D_hipster.jpg',
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text(
+                                        'Name',
+                                        style: TextStyle(
+                                          color: MyColors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      LocationWidget(isBig: false),
+                                    ],
+                                  ),
+                                  Expanded(child: Container()),
+                                  CircularButton(
+                                    icon: Icons.message_outlined,
+                                    onPressed: () {},
+                                    dark: false,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const WhiteTextTitle(text: 'Book Info'),
+                      ExpandebleText(showAllText: showAllInfoDescription),
+                      const WhiteTextTitle(text: 'Sell Type'),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: const [
+                          RetailTypeCircle(
+                            icon: Icons.sell_outlined,
+                            isSelected: true,
+                          ),
+                          RetailTypeCircle(
+                            icon: Icons.timer_outlined,
+                            isSelected: true,
+                          ),
+                          RetailTypeCircle(
+                            icon: Icons.swap_horiz_rounded,
+                            isSelected: false,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      ActionButton(
+                        text: 'Buy for 34kr',
+                        onPressed: () {},
+                      ),
+                      const SizedBox(height: 10),
+                      const OrDivider(),
+                      const SizedBox(height: 10),
+                      ActionButton(
+                        text: 'Rent for 12kr',
+                        onPressed: () {},
+                      ),
+                      const OrDivider(),
+                      const SizedBox(height: 10),
+                      ActionButton(
+                        text: 'Swap books',
+                        onPressed: () {},
+                      ),
+                    ],
                   ),
                 ),
               ),

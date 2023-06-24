@@ -27,17 +27,19 @@ class RowSubmitButton extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 icon,
-                size: 18,
+                size: 16,
               ),
+              const SizedBox(width: 5),
               Text(
                 text,
                 style: const TextStyle(
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                   color: MyColors.white,
+                  fontSize: 12,
                 ),
               ),
             ],

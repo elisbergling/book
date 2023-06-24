@@ -1,6 +1,4 @@
-import 'package:book/models/chip.dart';
 import 'package:book/providers/change_notifier_provider.dart';
-import 'package:book/screens/home/explore_screen_widgets/my_filter_chip.dart';
 import 'package:book/style/colors.dart';
 import 'package:book/utils/chips.dart';
 import 'package:book/utils/enums.dart';

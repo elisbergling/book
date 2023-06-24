@@ -31,11 +31,12 @@ class ChipState extends ChangeNotifier {
   }
 
   void toogle(MyChip chip) {
-    if (isMarked(chip) && chip.type != ChipType.sortBy) {
+    ChipType type = isAddBook ? ChipType.language : ChipType.sortBy;
+    if (isMarked(chip) && chip.type != type) {
       tempState[chip.type]!
           .removeWhere((element) => element.label == chip.label);
     } else {
-      if (chip.type == ChipType.sortBy) {
+      if (chip.type == type) {
         tempState[chip.type]!.clear();
       }
       tempState[chip.type]!.add(chip);

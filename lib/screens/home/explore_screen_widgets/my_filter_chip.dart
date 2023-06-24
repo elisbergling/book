@@ -27,21 +27,12 @@ class MyFilterChip extends HookConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(4),
       child: Container(
-        padding: const EdgeInsets.all(1.5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: chipState.isMarked(chip)
-                ? [
-                    MyColors.blue,
-                    MyColors.purple,
-                  ]
-                : [
-                    Colors.white,
-                    Colors.white,
-                  ],
+          border: Border.all(
+            width: 1.2,
+            color:
+                chipState.isMarked(chip) ? MyColors.purple : MyColors.ligthGrey,
           ),
         ),
         child: FilterChip(
@@ -51,9 +42,11 @@ class MyFilterChip extends HookConsumerWidget {
             ref.read(provider().notifier).toogle(chip);
           },
           showCheckmark: false,
-          selectedColor: MyColors.black,
+          selectedColor: MyColors.purple.withOpacity(0.1),
           backgroundColor: MyColors.darkGrey,
-          labelStyle: const TextStyle(color: Colors.white),
+          labelStyle: const TextStyle(
+            color: MyColors.white,
+          ),
         ),
       ),
     );

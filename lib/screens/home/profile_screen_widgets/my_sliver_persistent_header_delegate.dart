@@ -42,8 +42,8 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
             color: MyColors.black,
             shadows: const [
               BoxShadow(
-                color: MyColors.black,
-                blurRadius: 15,
+                color: MyColors.darkGrey,
+                blurRadius: 30,
                 spreadRadius: 0,
               ),
             ],

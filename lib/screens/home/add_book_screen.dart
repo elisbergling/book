@@ -2,6 +2,7 @@ import 'package:book/screens/home/add_book_screens/enter_details_maually_screen.
 import 'package:book/screens/home/add_book_screens/scan_book_screen.dart';
 import 'package:book/style/colors.dart';
 import 'package:book/utils/routes.dart';
+import 'package:book/widgets/action_button.dart';
 import 'package:book/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 
@@ -30,20 +31,11 @@ class AddBookScreen extends StatelessWidget {
               ),
             ),
           ),
-          SubmitButton(
+          ActionButton(
+            text: 'Enter Details Manually',
+            isFilled: false,
             onPressed: () => Navigator.of(context).push(
               MyRoutes.fromRigth(const EnterDetailsManuallyScreen()),
-            ),
-            heigth: 40,
-            isFilled: false,
-            child: const Center(
-              child: Text(
-                'Enter Details Manually',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: MyColors.white,
-                ),
-              ),
             ),
           ),
         ],
