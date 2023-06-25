@@ -79,7 +79,7 @@ class SocialLoginButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(width: MediaQuery.of(context).size.width * 0.3 - 40),
+          SizedBox(width: (MediaQuery.of(context).size.width - 220) * 0.5),
           icon ?? Image.asset(imageName!, scale: 2.5, color: color),
           const SizedBox(width: 20),
           Text(

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:book/screens/auth/signup_screen_widgets/or_divider.dart';
 import 'package:book/screens/home/book_screen_widgets/expandeble_text.dart';
 import 'package:book/screens/home/book_screen_widgets/location_widget.dart';
@@ -7,7 +9,6 @@ import 'package:book/widgets/action_button.dart';
 import 'package:book/widgets/circular_button.dart';
 import 'package:book/widgets/heart_button.dart';
 import 'package:book/widgets/my_back_button.dart';
-import 'package:book/widgets/submit_button.dart';
 import 'package:book/widgets/white_text_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -23,6 +24,7 @@ class BookScreen extends HookWidget {
     final backgroundTopOffset = useState(0.0);
     final showAllBookDescription = useState(false);
     final showAllInfoDescription = useState(false);
+    final expandebleTextHigth = useState(0.0);
 
     useEffect(() {
       listener() {
@@ -44,7 +46,9 @@ class BookScreen extends HookWidget {
       body: SingleChildScrollView(
         controller: scrollController,
         child: SizedBox(
-          height: MediaQuery.of(context).size.height + 1000,
+          height: MediaQuery.of(context).size.width +
+              880 +
+              expandebleTextHigth.value,
           child: Stack(
             children: [
               Positioned(
@@ -57,13 +61,12 @@ class BookScreen extends HookWidget {
                   child: PageView.builder(
                     controller: pageController,
                     itemCount: 5,
-                    itemBuilder: (context, index) => Column(
-                      children: [
-                        Image.asset(
-                          'lib/assets/images/3D_hipster.jpg',
-                          key: GlobalKey(debugLabel: 'HipsterImage$index'),
-                        ),
-                      ],
+                    itemBuilder: (context, index) => SizedBox(
+                      height: MediaQuery.of(context).size.width,
+                      child: Image.asset(
+                        'lib/assets/images/3D_hipster.jpg',
+                        key: GlobalKey(debugLabel: 'HipsterImage$index'),
+                      ),
                     ),
                   ),
                 ),
@@ -115,12 +118,13 @@ class BookScreen extends HookWidget {
                 right: 0,
                 top: MediaQuery.of(context).size.width - 30,
                 child: Container(
-                  height: 1000,
                   padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(30),
+                    ),
                     color: MyColors.black,
-                    boxShadow: const [
+                    boxShadow: [
                       BoxShadow(
                         blurRadius: 50,
                         color: MyColors.darkGrey,
@@ -176,7 +180,9 @@ class BookScreen extends HookWidget {
                       const WhiteTextTitle(text: 'Location'),
                       const LocationWidget(),
                       const WhiteTextTitle(text: 'Book Description'),
-                      ExpandebleText(showAllText: showAllBookDescription),
+                      ExpandebleText(
+                          showAllText: showAllBookDescription,
+                          textHigth: expandebleTextHigth),
                       const WhiteTextTitle(text: 'Seller Info'),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
@@ -229,7 +235,9 @@ class BookScreen extends HookWidget {
                         ),
                       ),
                       const WhiteTextTitle(text: 'Book Info'),
-                      ExpandebleText(showAllText: showAllInfoDescription),
+                      ExpandebleText(
+                          showAllText: showAllInfoDescription,
+                          textHigth: expandebleTextHigth),
                       const WhiteTextTitle(text: 'Sell Type'),
                       const SizedBox(height: 10),
                       Row(
@@ -261,12 +269,14 @@ class BookScreen extends HookWidget {
                         text: 'Rent for 12kr',
                         onPressed: () {},
                       ),
+                      const SizedBox(height: 10),
                       const OrDivider(),
                       const SizedBox(height: 10),
                       ActionButton(
                         text: 'Swap books',
                         onPressed: () {},
                       ),
+                      //const Expanded(child: SizedBox()),
                     ],
                   ),
                 ),
