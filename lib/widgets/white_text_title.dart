@@ -19,7 +19,7 @@ class WhiteTextTitle extends StatelessWidget {
         children: [
           const SizedBox(height: 20),
           Text(
-            '$text:',
+            text,
             style: const TextStyle(
               color: MyColors.white,
               fontSize: 14,

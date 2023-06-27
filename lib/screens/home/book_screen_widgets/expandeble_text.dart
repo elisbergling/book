@@ -5,12 +5,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class ExpandebleText extends HookWidget {
   const ExpandebleText({
     super.key,
-    required this.onPressed,
     required this.showAllText,
     required this.text,
   });
 
-  final Function() onPressed;
   final ValueNotifier<bool> showAllText;
   final String text;
 
@@ -30,10 +28,7 @@ class ExpandebleText extends HookWidget {
           overflow: showAllText.value ? null : TextOverflow.ellipsis,
         ),
         TextButton(
-          onPressed: () {
-            showAllText.value = !showAllText.value;
-            onPressed();
-          },
+          onPressed: () => showAllText.value = !showAllText.value,
           child: Text(
             showAllText.value ? 'Show Less' : 'Show More',
           ),

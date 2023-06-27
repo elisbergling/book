@@ -2,9 +2,14 @@ import 'package:book/style/colors.dart';
 import 'package:flutter/material.dart';
 
 class LocationWidget extends StatelessWidget {
-  const LocationWidget({super.key, this.isBig = true});
+  const LocationWidget({
+    super.key,
+    this.isBig = true,
+    required this.text,
+  });
 
   final bool isBig;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class LocationWidget extends StatelessWidget {
           color: MyColors.ligthGrey,
         ),
         Text(
-          'Stockholm',
+          text,
           style: TextStyle(
             color: MyColors.white,
             fontSize: isBig ? 16 : 12,

@@ -5,13 +5,18 @@ import 'package:book/screens/home/profile_screen_widgets/my_sliver_persistent_he
 import 'package:book/screens/home/profile_screen_widgets/profile_numbers.dart';
 import 'package:book/screens/home/profile_screen_widgets/profile_wave_shape_border.dart';
 import 'package:book/style/colors.dart';
+import 'package:book/widgets/my_back_button_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ProfileScreen extends HookWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({
+    super.key,
+    this.isOwn = true,
+  });
 
   static const double gapHeigth = 150;
+  final bool isOwn;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +37,7 @@ class ProfileScreen extends HookWidget {
     }, []);
 
     return Scaffold(
+      appBar: !isOwn ? const MyBackButtonAppBar() : null,
       backgroundColor: MyColors.black,
       body: SafeArea(
         child: CustomScrollView(

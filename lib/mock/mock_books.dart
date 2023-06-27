@@ -109,7 +109,8 @@ final List<Book> mockBooks = [
     bookInfo:
         'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
     images: [
-      'https://images-na.ssl-images-amazon.com/images/I/51yfgMIMwDL._SX322_BO1,204,203,200_.jpg'
+      'lib/assets/images/3D_hipster.jpg',
+      'lib/assets/images/3D_hipster.jpg',
     ],
     ownerUid: '5',
     isSell: false,

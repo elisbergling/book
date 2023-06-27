@@ -10,25 +10,22 @@ import 'package:book/widgets/heart_button.dart';
 import 'package:book/widgets/my_back_button.dart';
 import 'package:book/widgets/white_text_title.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class BookScreen extends HookWidget {
   const BookScreen({
     super.key,
     required this.book,
+    this.isPreview = false,
   });
 
   final Book book;
-
-  double getColumnHight(GlobalKey key) {
-    final RenderBox renderBox =
-        key.currentContext!.findRenderObject() as RenderBox;
-    return renderBox.size.height;
-  }
+  final bool isPreview;
 
   void updateColumnHight(GlobalKey key, ValueNotifier<double?> hight) {
-    hight.value = getColumnHight(key);
+    final RenderBox renderBox =
+        key.currentContext!.findRenderObject() as RenderBox;
+    hight.value = renderBox.size.height;
   }
 
   @override
@@ -54,10 +51,6 @@ class BookScreen extends HookWidget {
         },
       );
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        hightState.value = getColumnHight(columnKey);
-      });
-
       return () {
         pageController.removeListener(listener);
       };
@@ -67,7 +60,7 @@ class BookScreen extends HookWidget {
       body: SingleChildScrollView(
         controller: scrollController,
         child: SizedBox(
-          height: MediaQuery.of(context).size.width + hightState.value,
+          height: MediaQuery.of(context).size.width + hightState.value + 10,
           child: Stack(
             children: [
               Positioned(
@@ -79,11 +72,11 @@ class BookScreen extends HookWidget {
                   height: MediaQuery.of(context).size.width,
                   child: PageView.builder(
                     controller: pageController,
-                    itemCount: 5,
+                    itemCount: book.images.length,
                     itemBuilder: (context, index) => SizedBox(
                       height: MediaQuery.of(context).size.width,
                       child: Image.asset(
-                        'lib/assets/images/3D_hipster.jpg',
+                        book.images[index],
                       ),
                     ),
                   ),
@@ -98,35 +91,36 @@ class BookScreen extends HookWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const MyBackButton(dark: true),
-                    Container(
-                      margin: const EdgeInsets.only(top: 5),
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      height: 30,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: MyColors.darkGrey.withOpacity(0.7),
-                      ),
-                      child: ValueListenableBuilder<int>(
-                        valueListenable: pictureIndexNotifier,
-                        builder: (context, value, child) => Row(
-                          children: [
-                            for (int i = 0; i < 5; i++)
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 100),
-                                height: value == i ? 10 : 8,
-                                width: value == i ? 10 : 8,
-                                margin: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: value == i
-                                      ? MyColors.purple
-                                      : MyColors.white.withOpacity(0.9),
+                    if (book.images.length != 1)
+                      Container(
+                        margin: const EdgeInsets.only(top: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        height: 30,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: MyColors.darkGrey.withOpacity(0.7),
+                        ),
+                        child: ValueListenableBuilder<int>(
+                          valueListenable: pictureIndexNotifier,
+                          builder: (context, value, child) => Row(
+                            children: [
+                              for (int i = 0; i < book.images.length; i++)
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 100),
+                                  height: value == i ? 10 : 8,
+                                  width: value == i ? 10 : 8,
+                                  margin: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: value == i
+                                        ? MyColors.purple
+                                        : MyColors.white.withOpacity(0.9),
+                                  ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
                     const HeartButton(),
                   ],
                 ),
@@ -204,66 +198,58 @@ class BookScreen extends HookWidget {
                           ],
                         ),
                         const WhiteTextTitle(text: 'Location'),
-                        const LocationWidget(),
+                        LocationWidget(text: book.location),
                         const WhiteTextTitle(text: 'Book Description'),
                         ExpandebleText(
                           text: book.bookDescription,
                           showAllText: showAllBookDescription,
-                          onPressed: () {
-                            updateColumnHight(columnKey, hightState);
-                            //hightState.value = constraints.maxHeight;
-                          },
                         ),
                         const WhiteTextTitle(text: 'Seller Info'),
-                        const SellerInfoCard(isPreview: true),
+                        SellerInfoCard(isPreview: isPreview),
                         const WhiteTextTitle(text: 'Book Info'),
                         ExpandebleText(
                           text: book.bookInfo,
                           showAllText: showAllInfoDescription,
-                          onPressed: () {
-                            updateColumnHight(columnKey, hightState);
-                            // hightState.value = constraints.maxHeight;
-                          },
                         ),
                         const WhiteTextTitle(text: 'Sell Type'),
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: const [
+                          children: [
                             RetailTypeCircle(
                               icon: Icons.sell_outlined,
-                              isSelected: true,
+                              isSelected: book.isSell,
                             ),
                             RetailTypeCircle(
                               icon: Icons.timer_outlined,
-                              isSelected: true,
+                              isSelected: book.isRent,
                             ),
                             RetailTypeCircle(
                               icon: Icons.swap_horiz_rounded,
-                              isSelected: false,
+                              isSelected: book.isSwap,
                             ),
                           ],
                         ),
                         const SizedBox(height: 20),
-                        ActionButton(
-                          text: 'Buy for 34kr',
-                          onPressed: () {},
-                        ),
-                        const SizedBox(height: 10),
-                        const OrDivider(),
-                        const SizedBox(height: 10),
-                        ActionButton(
-                          text: 'Rent for 12kr',
-                          onPressed: () {},
-                        ),
-                        const SizedBox(height: 10),
-                        const OrDivider(),
-                        const SizedBox(height: 10),
-                        ActionButton(
-                          text: 'Swap books',
-                          onPressed: () {},
-                        ),
-                        //const Expanded(child: SizedBox()),
+                        if (book.isSell)
+                          ActionButton(
+                            text: 'Buy for ${book.sellPrice}kr',
+                            onPressed: () {},
+                          ),
+                        if ((book.isSell && book.isRent) ||
+                            (book.isSell && book.isSwap))
+                          const OrDivider(),
+                        if (book.isRent)
+                          ActionButton(
+                            text: 'Rent for ${book.leasePrice}kr',
+                            onPressed: () {},
+                          ),
+                        if (book.isSwap && book.isRent) const OrDivider(),
+                        if (book.isSwap)
+                          ActionButton(
+                            text: 'Swap books',
+                            onPressed: () {},
+                          ),
                       ],
                     );
                   }),

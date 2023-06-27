@@ -62,7 +62,6 @@ class SignUpScreen extends HookWidget {
             ),
           ),
           const OrDivider(),
-          const SizedBox(height: 10),
           SocialLoginButton(
             buttonType: SocialLoginButtonType.google,
             onPressed: () {},

@@ -27,7 +27,7 @@ class SellerInfoCard extends StatelessWidget {
           onTap: isPreview
               ? () {}
               : () => Navigator.of(context)
-                  .push(MyRoutes.fromRigth(const ProfileScreen())),
+                  .push(MyRoutes.fromRigth(const ProfileScreen(isOwn: false))),
           child: Container(
             height: 80,
             padding: const EdgeInsets.all(10),
@@ -53,7 +53,7 @@ class SellerInfoCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 5),
-                    LocationWidget(isBig: false),
+                    LocationWidget(isBig: false, text: 'Stockholm'),
                   ],
                 ),
                 Expanded(child: Container()),

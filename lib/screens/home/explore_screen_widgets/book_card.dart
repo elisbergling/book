@@ -2,6 +2,7 @@ import 'package:book/models/book.dart';
 import 'package:book/screens/home/book_screen.dart';
 import 'package:book/style/colors.dart';
 import 'package:book/utils/routes.dart';
+import 'package:book/widgets/circular_button.dart';
 import 'package:book/widgets/heart_button.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,7 @@ class BookCard extends StatelessWidget {
                   child: Stack(
                     alignment: Alignment.bottomRight,
                     children: [
-                      Image.asset('lib/assets/images/3D_hipster.jpg'),
+                      Image.asset(book.images[0]),
                       //CachedNetworkImage(
                       //  imageUrl: book.imageUrl,
                       //  fit: BoxFit.fitHeight,
@@ -50,8 +51,38 @@ class BookCard extends StatelessWidget {
                       //    ),
                       //  ),
                       //),
-                      const Positioned(
-                          top: 10, right: 10, child: HeartButton()),
+                      Positioned(
+                        top: 10,
+                        right: 5,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const HeartButton(size: 31),
+                            const SizedBox(height: 5),
+                            if (book.isSell)
+                              CircularButton(
+                                icon: Icons.sell_outlined,
+                                onPressed: () {},
+                                dark: true,
+                                size: 45,
+                              ),
+                            if (book.isRent)
+                              CircularButton(
+                                icon: Icons.timer_outlined,
+                                onPressed: () {},
+                                dark: true,
+                                size: 45,
+                              ),
+                            if (book.isSwap)
+                              CircularButton(
+                                icon: Icons.swap_horiz_rounded,
+                                onPressed: () {},
+                                dark: true,
+                                size: 45,
+                              ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),

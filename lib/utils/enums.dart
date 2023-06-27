@@ -9,3 +9,9 @@ enum SellType {
   rent,
   swap,
 }
+
+enum ChipCollectionType {
+  explore,
+  addBook,
+  other,
+}

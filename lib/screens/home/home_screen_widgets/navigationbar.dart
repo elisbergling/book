@@ -28,10 +28,10 @@ class MyNavigationBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: const [
-          NavigationbarIcon(icon: FontAwesomeIcons.airbnb, index: 0),
-          NavigationbarIcon(icon: FontAwesomeIcons.plus, index: 1),
-          NavigationbarIcon(icon: FontAwesomeIcons.bookJournalWhills, index: 2),
-          NavigationbarIcon(icon: Icons.abc, index: 3),
+          NavigationbarIcon(icon: Icons.explore_outlined, index: 0),
+          NavigationbarIcon(icon: Icons.add, index: 1),
+          NavigationbarIcon(icon: Icons.person_3_outlined, index: 2),
+          NavigationbarIcon(icon: Icons.settings, index: 3),
         ],
       ),
     );

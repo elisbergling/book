@@ -279,6 +279,7 @@ class EnterDetailsManuallyScreen extends HookWidget {
               onPressed: () =>
                   Navigator.of(context).push(MyRoutes.fromRigth(BookScreen(
                 book: mockBooks[0],
+                isPreview: true,
               ))),
             ),
             const SizedBox(height: 20),
