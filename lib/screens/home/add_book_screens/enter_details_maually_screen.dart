@@ -1,3 +1,4 @@
+import 'package:book/mock/mock_books.dart';
 import 'package:book/screens/home/add_book_screens/enter_dattails_manually_screen_widgets/row_submit_button.dart';
 import 'package:book/screens/home/book_screen.dart';
 import 'package:book/style/colors.dart';
@@ -275,8 +276,10 @@ class EnterDetailsManuallyScreen extends HookWidget {
             const SizedBox(height: 20),
             ActionButton(
               text: 'Preview',
-              onPressed: () => Navigator.of(context)
-                  .push(MyRoutes.fromRigth(const BookScreen())),
+              onPressed: () =>
+                  Navigator.of(context).push(MyRoutes.fromRigth(BookScreen(
+                book: mockBooks[0],
+              ))),
             ),
             const SizedBox(height: 20),
           ],

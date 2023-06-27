@@ -97,8 +97,9 @@ class ProfileScreen extends HookWidget {
                         const SizedBox(height: 50.0),
                         const CircleAvatar(
                           radius: 40.0,
-                          backgroundImage: NetworkImage(
-                              'https://avatars.githubusercontent.com/u/9919?v=4'),
+                          backgroundImage: AssetImage(
+                            'lib/assets/images/3D_hipster.jpg',
+                          ),
                         ),
                         const SizedBox(height: 20.0),
                         const Text(

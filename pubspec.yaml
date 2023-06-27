@@ -43,6 +43,7 @@ dependencies:
   uuid:
   google_fonts: ^4.0.4
   firebase_core: ^2.14.0
+  cloud_firestore:
 
 
 

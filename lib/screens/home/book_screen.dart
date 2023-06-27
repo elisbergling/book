@@ -1,30 +1,46 @@
-import 'dart:math';
-
+import 'package:book/models/book.dart';
 import 'package:book/screens/auth/signup_screen_widgets/or_divider.dart';
 import 'package:book/screens/home/book_screen_widgets/expandeble_text.dart';
 import 'package:book/screens/home/book_screen_widgets/location_widget.dart';
 import 'package:book/screens/home/book_screen_widgets/retail_type_circle.dart';
+import 'package:book/screens/home/book_screen_widgets/seller_info_card.dart';
 import 'package:book/style/colors.dart';
 import 'package:book/widgets/action_button.dart';
-import 'package:book/widgets/circular_button.dart';
 import 'package:book/widgets/heart_button.dart';
 import 'package:book/widgets/my_back_button.dart';
 import 'package:book/widgets/white_text_title.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class BookScreen extends HookWidget {
-  const BookScreen({super.key});
+  const BookScreen({
+    super.key,
+    required this.book,
+  });
+
+  final Book book;
+
+  double getColumnHight(GlobalKey key) {
+    final RenderBox renderBox =
+        key.currentContext!.findRenderObject() as RenderBox;
+    return renderBox.size.height;
+  }
+
+  void updateColumnHight(GlobalKey key, ValueNotifier<double?> hight) {
+    hight.value = getColumnHight(key);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey columnKey = GlobalKey();
     final scrollController = useScrollController();
     final pageController = usePageController(initialPage: 0);
     final pictureIndexNotifier = useValueNotifier<int>(0);
     final backgroundTopOffset = useState(0.0);
     final showAllBookDescription = useState(false);
     final showAllInfoDescription = useState(false);
-    final expandebleTextHigth = useState(0.0);
+    final hightState = useState<double>(0);
 
     useEffect(() {
       listener() {
@@ -37,6 +53,11 @@ class BookScreen extends HookWidget {
           backgroundTopOffset.value = scrollController.offset / 2;
         },
       );
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        hightState.value = getColumnHight(columnKey);
+      });
+
       return () {
         pageController.removeListener(listener);
       };
@@ -46,9 +67,7 @@ class BookScreen extends HookWidget {
       body: SingleChildScrollView(
         controller: scrollController,
         child: SizedBox(
-          height: MediaQuery.of(context).size.width +
-              880 +
-              expandebleTextHigth.value,
+          height: MediaQuery.of(context).size.width + hightState.value,
           child: Stack(
             children: [
               Positioned(
@@ -65,7 +84,6 @@ class BookScreen extends HookWidget {
                       height: MediaQuery.of(context).size.width,
                       child: Image.asset(
                         'lib/assets/images/3D_hipster.jpg',
-                        key: GlobalKey(debugLabel: 'HipsterImage$index'),
                       ),
                     ),
                   ),
@@ -132,153 +150,123 @@ class BookScreen extends HookWidget {
                       )
                     ],
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'Title',
-                                style: TextStyle(
-                                  color: MyColors.white,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'author',
-                                style: TextStyle(
-                                  color: MyColors.ligthGrey,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: const [
-                              Text(
-                                '4,4',
-                                style: TextStyle(
-                                  color: MyColors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Icon(
-                                Icons.star_rounded,
-                                color: Colors.yellowAccent,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      const WhiteTextTitle(text: 'Location'),
-                      const LocationWidget(),
-                      const WhiteTextTitle(text: 'Book Description'),
-                      ExpandebleText(
-                          showAllText: showAllBookDescription,
-                          textHigth: expandebleTextHigth),
-                      const WhiteTextTitle(text: 'Seller Info'),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Material(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          color: MyColors.darkGrey,
-                          child: InkWell(
-                            onTap: () {},
-                            child: Container(
-                              height: 80,
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
+                  child: LayoutBuilder(builder: (context, constraints) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      updateColumnHight(columnKey, hightState);
+                    });
+                    return Column(
+                      key: columnKey,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.asset(
-                                      'lib/assets/images/3D_hipster.jpg',
+                                  Text(
+                                    book.title,
+                                    style: const TextStyle(
+                                      color: MyColors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    book.author,
+                                    style: const TextStyle(
+                                      color: MyColors.ligthGrey,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Text(
-                                        'Name',
-                                        style: TextStyle(
-                                          color: MyColors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      LocationWidget(isBig: false),
-                                    ],
-                                  ),
-                                  Expanded(child: Container()),
-                                  CircularButton(
-                                    icon: Icons.message_outlined,
-                                    onPressed: () {},
-                                    dark: false,
-                                  )
                                 ],
                               ),
                             ),
-                          ),
+                            Row(
+                              children: const [
+                                Text(
+                                  '4,4',
+                                  style: TextStyle(
+                                    color: MyColors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.star_rounded,
+                                  color: Colors.yellowAccent,
+                                )
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                      const WhiteTextTitle(text: 'Book Info'),
-                      ExpandebleText(
+                        const WhiteTextTitle(text: 'Location'),
+                        const LocationWidget(),
+                        const WhiteTextTitle(text: 'Book Description'),
+                        ExpandebleText(
+                          text: book.bookDescription,
+                          showAllText: showAllBookDescription,
+                          onPressed: () {
+                            updateColumnHight(columnKey, hightState);
+                            //hightState.value = constraints.maxHeight;
+                          },
+                        ),
+                        const WhiteTextTitle(text: 'Seller Info'),
+                        const SellerInfoCard(isPreview: true),
+                        const WhiteTextTitle(text: 'Book Info'),
+                        ExpandebleText(
+                          text: book.bookInfo,
                           showAllText: showAllInfoDescription,
-                          textHigth: expandebleTextHigth),
-                      const WhiteTextTitle(text: 'Sell Type'),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const [
-                          RetailTypeCircle(
-                            icon: Icons.sell_outlined,
-                            isSelected: true,
-                          ),
-                          RetailTypeCircle(
-                            icon: Icons.timer_outlined,
-                            isSelected: true,
-                          ),
-                          RetailTypeCircle(
-                            icon: Icons.swap_horiz_rounded,
-                            isSelected: false,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      ActionButton(
-                        text: 'Buy for 34kr',
-                        onPressed: () {},
-                      ),
-                      const SizedBox(height: 10),
-                      const OrDivider(),
-                      const SizedBox(height: 10),
-                      ActionButton(
-                        text: 'Rent for 12kr',
-                        onPressed: () {},
-                      ),
-                      const SizedBox(height: 10),
-                      const OrDivider(),
-                      const SizedBox(height: 10),
-                      ActionButton(
-                        text: 'Swap books',
-                        onPressed: () {},
-                      ),
-                      //const Expanded(child: SizedBox()),
-                    ],
-                  ),
+                          onPressed: () {
+                            updateColumnHight(columnKey, hightState);
+                            // hightState.value = constraints.maxHeight;
+                          },
+                        ),
+                        const WhiteTextTitle(text: 'Sell Type'),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: const [
+                            RetailTypeCircle(
+                              icon: Icons.sell_outlined,
+                              isSelected: true,
+                            ),
+                            RetailTypeCircle(
+                              icon: Icons.timer_outlined,
+                              isSelected: true,
+                            ),
+                            RetailTypeCircle(
+                              icon: Icons.swap_horiz_rounded,
+                              isSelected: false,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        ActionButton(
+                          text: 'Buy for 34kr',
+                          onPressed: () {},
+                        ),
+                        const SizedBox(height: 10),
+                        const OrDivider(),
+                        const SizedBox(height: 10),
+                        ActionButton(
+                          text: 'Rent for 12kr',
+                          onPressed: () {},
+                        ),
+                        const SizedBox(height: 10),
+                        const OrDivider(),
+                        const SizedBox(height: 10),
+                        ActionButton(
+                          text: 'Swap books',
+                          onPressed: () {},
+                        ),
+                        //const Expanded(child: SizedBox()),
+                      ],
+                    );
+                  }),
                 ),
               ),
             ],

@@ -3,3 +3,9 @@ enum ChipType {
   language,
   sortBy,
 }
+
+enum SellType {
+  sell,
+  rent,
+  swap,
+}
