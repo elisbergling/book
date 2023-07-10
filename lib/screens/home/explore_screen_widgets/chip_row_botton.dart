@@ -13,9 +13,9 @@ class ChipRowBotton extends StatelessWidget implements PreferredSizeWidget {
       child: Container(
         color: Colors.transparent,
         padding: const EdgeInsets.only(bottom: 5),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             SizedBox(width: 15),
             ExploreTypeRowBotton(text: 'List'),
             ExploreTypeRowBotton(text: 'Map'),

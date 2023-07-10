@@ -1,6 +1,5 @@
 import 'package:book/style/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:book/screens/home/home_screen_widgets/navigationbar_icon.dart';
 
 class MyNavigationBar extends StatelessWidget {
@@ -24,10 +23,10 @@ class MyNavigationBar extends StatelessWidget {
           )
         ],
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: const [
+        children: [
           NavigationbarIcon(icon: Icons.explore_outlined, index: 0),
           NavigationbarIcon(icon: Icons.add, index: 1),
           NavigationbarIcon(icon: Icons.person_3_outlined, index: 2),

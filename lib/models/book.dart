@@ -1,3 +1,5 @@
+import 'package:book/models/location.dart';
+import 'package:book/utils/formats.dart';
 import 'package:flutter/material.dart';
 
 class Book {
@@ -7,7 +9,7 @@ class Book {
   final String bookDescription;
   final List<String> images;
   final List<String> likedUids;
-  final String location;
+  final Location location;
   final String ownerUid;
   final String bookInfo;
   final bool isSell;
@@ -19,6 +21,17 @@ class Book {
   final bool isSwap;
 
   bool get isLeaseDuration => leaseDuration != null;
+
+  String get leaseTime => Formats.leaseTime(
+        isLeaseDuration: isLeaseDuration,
+        leaseTimeRange: leaseTimeRange,
+        leaseDuration: leaseDuration,
+      );
+  String get leaseTimeShort => Formats.leaseTimeShort(
+        isLeaseDuration: isLeaseDuration,
+        leaseTimeRange: leaseTimeRange,
+        leaseDuration: leaseDuration,
+      );
 
   Book({
     required this.id,
@@ -45,7 +58,7 @@ class Book {
       title: json['title'],
       author: json['author'],
       images: json['images'],
-      location: json['location'],
+      location: Location.fromJson(json['location']),
       bookDescription: json['bookDescription'],
       bookInfo: json['bookInfo'],
       ownerUid: json['ownerUid'],

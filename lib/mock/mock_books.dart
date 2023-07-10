@@ -1,3 +1,4 @@
+import 'package:book/mock/mock_locations.dart';
 import 'package:book/models/book.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,7 @@ final List<Book> mockBooks = [
     id: '1',
     title: 'To Kill a Mockingbird',
     author: 'Harper Lee',
-    location: 'New York',
+    location: mockLocations[0],
     bookDescription:
         'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
     bookInfo:
@@ -23,7 +24,7 @@ final List<Book> mockBooks = [
     isSwap: false,
     sellPrice: null,
     leasePrice: 45,
-    leaseDuration: null,
+    leaseDuration: 9,
     leaseTimeRange: null,
     likedUids: [],
   ),
@@ -31,7 +32,7 @@ final List<Book> mockBooks = [
     id: '2',
     title: '1984',
     author: 'George Orwell',
-    location: 'Los Angeles',
+    location: mockLocations[1],
     bookDescription:
         'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
     bookInfo:
@@ -56,7 +57,7 @@ final List<Book> mockBooks = [
     id: '3',
     title: 'The Great Gatsby',
     author: 'F. Scott Fitzgerald',
-    location: 'San Francisco',
+    location: mockLocations[2],
     bookDescription:
         'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
     bookInfo:
@@ -79,7 +80,7 @@ final List<Book> mockBooks = [
     id: '4',
     title: 'One Hundred Years of Solitude',
     author: 'Gabriel Garcia Marquez',
-    location: 'Chicago',
+    location: mockLocations[3],
     bookDescription:
         'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem v',
     bookInfo:
@@ -103,7 +104,7 @@ final List<Book> mockBooks = [
     id: '5',
     title: 'Brave New World',
     author: 'Aldous Huxley',
-    location: 'Seattle',
+    location: mockLocations[4],
     bookDescription:
         'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
     bookInfo:
@@ -126,7 +127,7 @@ final List<Book> mockBooks = [
     id: '6',
     title: 'Pride and Prejudice',
     author: 'Jane Austen',
-    location: 'Boston',
+    location: mockLocations[5],
     bookDescription:
         'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem vvvv',
     bookInfo:
@@ -148,7 +149,7 @@ final List<Book> mockBooks = [
     id: '7',
     title: 'The Catcher in the Rye',
     author: 'J.D. Salinger',
-    location: 'Miami',
+    location: mockLocations[6],
     bookDescription:
         'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
     bookInfo:

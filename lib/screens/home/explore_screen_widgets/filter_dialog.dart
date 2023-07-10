@@ -1,4 +1,5 @@
 import 'package:book/providers/change_notifier_provider.dart';
+import 'package:book/screens/home/explore_screen_widgets/my_text_button.dart';
 import 'package:book/style/colors.dart';
 import 'package:book/utils/chips.dart';
 import 'package:book/utils/enums.dart';
@@ -153,60 +154,24 @@ class FilterDialog extends HookConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-                        ref
-                            .read(sliderChnageNotifierProvider.notifier)
-                            .cancel();
-                        ref.read(chipChnageNotifierProvider.notifier).cancel();
-                        Navigator.pop(context);
-                      },
-                      style: TextButton.styleFrom(
-                        backgroundColor: MyColors.black,
-                        fixedSize: const Size(120, 35),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(
-                            width: 1,
-                            color: MyColors.purple,
-                          ),
-                        ),
-                      ),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  MyTextButton(
+                    onPressed: () {
+                      ref.read(sliderChnageNotifierProvider.notifier).cancel();
+                      ref.read(chipChnageNotifierProvider.notifier).cancel();
+                      Navigator.pop(context);
+                    },
+                    text: 'Cancel',
+                    isFilled: false,
                   ),
                   const SizedBox(width: 20),
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-                        ref.read(sliderChnageNotifierProvider.notifier).apply();
-                        ref.read(chipChnageNotifierProvider.notifier).apply();
-                        Navigator.pop(context);
-                      },
-                      style: TextButton.styleFrom(
-                        backgroundColor: MyColors.purple,
-                        fixedSize: const Size(120, 35),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text(
-                        'Apply',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  MyTextButton(
+                    onPressed: () {
+                      ref.read(sliderChnageNotifierProvider.notifier).apply();
+                      ref.read(chipChnageNotifierProvider.notifier).apply();
+                      Navigator.pop(context);
+                    },
+                    text: 'Apply',
+                    isFilled: true,
                   ),
                 ],
               ),

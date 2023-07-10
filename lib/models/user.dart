@@ -1,3 +1,4 @@
+import 'package:book/models/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
@@ -7,6 +8,7 @@ class User {
   final String profileImageUrl;
   final List<String> bookIds;
   final List<String> followingUserIds;
+  final Location location;
 
   User({
     required this.uid,
@@ -15,6 +17,7 @@ class User {
     required this.profileImageUrl,
     required this.bookIds,
     required this.followingUserIds,
+    required this.location,
   });
 
   factory User.fromFirestore(DocumentSnapshot doc) {
@@ -26,6 +29,7 @@ class User {
       profileImageUrl: data['profileImageUrl'],
       bookIds: List<String>.from(data['bookIds']),
       followingUserIds: List<String>.from(data['followingUserIds']),
+      location: Location.fromJson(data['location']),
     );
   }
 
@@ -36,6 +40,7 @@ class User {
       'profileImageUrl': profileImageUrl,
       'bookIds': bookIds,
       'followingUserIds': followingUserIds,
+      'location': location.toJson(),
     };
   }
 }

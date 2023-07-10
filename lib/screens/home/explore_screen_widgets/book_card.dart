@@ -1,12 +1,14 @@
 import 'package:book/models/book.dart';
 import 'package:book/screens/home/book_screen.dart';
+import 'package:book/screens/home/explore_screen_widgets/my_text_button.dart';
 import 'package:book/style/colors.dart';
 import 'package:book/utils/routes.dart';
 import 'package:book/widgets/circular_button.dart';
 import 'package:book/widgets/heart_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class BookCard extends StatelessWidget {
+class BookCard extends HookWidget {
   final Book book;
   const BookCard({
     required this.book,
@@ -16,6 +18,9 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showSell = useState(false);
+    final showRent = useState(false);
+    final showSwap = useState(false);
     return GestureDetector(
       onTap: () => Navigator.of(context)
           .push(MyRoutes.fromRigth(BookScreen(book: book))),
@@ -62,21 +67,33 @@ class BookCard extends StatelessWidget {
                             if (book.isSell)
                               CircularButton(
                                 icon: Icons.sell_outlined,
-                                onPressed: () {},
+                                onPressed: () {
+                                  showSell.value = true;
+                                  showRent.value = false;
+                                  showSwap.value = false;
+                                },
                                 dark: true,
                                 size: 45,
                               ),
                             if (book.isRent)
                               CircularButton(
                                 icon: Icons.timer_outlined,
-                                onPressed: () {},
+                                onPressed: () {
+                                  showSell.value = false;
+                                  showRent.value = true;
+                                  showSwap.value = false;
+                                },
                                 dark: true,
                                 size: 45,
                               ),
                             if (book.isSwap)
                               CircularButton(
                                 icon: Icons.swap_horiz_rounded,
-                                onPressed: () {},
+                                onPressed: () {
+                                  showSell.value = false;
+                                  showRent.value = false;
+                                  showSwap.value = true;
+                                },
                                 dark: true,
                                 size: 45,
                               ),
@@ -113,12 +130,12 @@ class BookCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Icon(
-                    Icons.attach_money,
+                    Icons.location_on_outlined,
                     color: MyColors.ligthGrey,
                     size: 18,
                   ),
                   Text(
-                    book.sellPrice.toString(),
+                    book.location.toString(),
                     style: const TextStyle(
                       fontSize: 16,
                       color: MyColors.ligthGrey,
@@ -140,6 +157,41 @@ class BookCard extends StatelessWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
+              if (book.isSell)
+                Row(
+                  children: [
+                    MyTextButton(
+                      onPressed: () {},
+                      text: 'Buy for ${book.sellPrice!.round()} kr',
+                      isFilled: true,
+                    ),
+                  ],
+                ),
+              if ((book.isSell && book.isRent) || (book.isSell && book.isSwap))
+                const SizedBox(height: 10),
+              if (book.isRent)
+                Row(
+                  children: [
+                    MyTextButton(
+                      onPressed: () {},
+                      text:
+                          'Rent for ${book.leasePrice!.round()} kr ${book.leaseTime}',
+                      isFilled: true,
+                    ),
+                  ],
+                ),
+              if (book.isSwap && book.isRent) const SizedBox(height: 10),
+              if (book.isSwap)
+                Row(
+                  children: [
+                    MyTextButton(
+                      onPressed: () {},
+                      text: 'Swap',
+                      isFilled: true,
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

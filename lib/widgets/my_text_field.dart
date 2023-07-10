@@ -9,6 +9,7 @@ class MyTextField extends StatelessWidget {
     this.keyBoardType,
     this.obscureText = false,
     this.isMultiLine = false,
+    this.validator,
   });
 
   final TextEditingController controller;
@@ -16,13 +17,15 @@ class MyTextField extends StatelessWidget {
   final TextInputType? keyBoardType;
   final bool obscureText;
   final bool isMultiLine;
+  final String? Function(String? value)? validator;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       height: !isMultiLine ? 40 : null,
-      child: TextField(
+      child: TextFormField(
+        validator: validator,
         minLines: 1,
         maxLines: isMultiLine ? 10 : 1,
         maxLength: isMultiLine ? 1000 : null,

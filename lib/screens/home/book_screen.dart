@@ -4,8 +4,8 @@ import 'package:book/screens/home/book_screen_widgets/expandeble_text.dart';
 import 'package:book/screens/home/book_screen_widgets/location_widget.dart';
 import 'package:book/screens/home/book_screen_widgets/retail_type_circle.dart';
 import 'package:book/screens/home/book_screen_widgets/seller_info_card.dart';
+import 'package:book/screens/home/explore_screen_widgets/my_text_button.dart';
 import 'package:book/style/colors.dart';
-import 'package:book/widgets/action_button.dart';
 import 'package:book/widgets/heart_button.dart';
 import 'package:book/widgets/my_back_button.dart';
 import 'package:book/widgets/white_text_title.dart';
@@ -179,8 +179,8 @@ class BookScreen extends HookWidget {
                                 ],
                               ),
                             ),
-                            Row(
-                              children: const [
+                            const Row(
+                              children: [
                                 Text(
                                   '4,4',
                                   style: TextStyle(
@@ -198,7 +198,7 @@ class BookScreen extends HookWidget {
                           ],
                         ),
                         const WhiteTextTitle(text: 'Location'),
-                        LocationWidget(text: book.location),
+                        LocationWidget(text: 'locatuon'),
                         const WhiteTextTitle(text: 'Book Description'),
                         ExpandebleText(
                           text: book.bookDescription,
@@ -232,23 +232,39 @@ class BookScreen extends HookWidget {
                         ),
                         const SizedBox(height: 20),
                         if (book.isSell)
-                          ActionButton(
-                            text: 'Buy for ${book.sellPrice}kr',
-                            onPressed: () {},
+                          Row(
+                            children: [
+                              MyTextButton(
+                                onPressed: () {},
+                                text: 'Buy for ${book.sellPrice!.round()} kr',
+                                isFilled: true,
+                              ),
+                            ],
                           ),
                         if ((book.isSell && book.isRent) ||
                             (book.isSell && book.isSwap))
                           const OrDivider(),
                         if (book.isRent)
-                          ActionButton(
-                            text: 'Rent for ${book.leasePrice}kr',
-                            onPressed: () {},
+                          Row(
+                            children: [
+                              MyTextButton(
+                                onPressed: () {},
+                                text:
+                                    'Rent for ${book.leasePrice!.round()} kr ${book.leaseTime}',
+                                isFilled: true,
+                              ),
+                            ],
                           ),
                         if (book.isSwap && book.isRent) const OrDivider(),
                         if (book.isSwap)
-                          ActionButton(
-                            text: 'Swap books',
-                            onPressed: () {},
+                          Row(
+                            children: [
+                              MyTextButton(
+                                onPressed: () {},
+                                text: 'Swap',
+                                isFilled: true,
+                              ),
+                            ],
                           ),
                       ],
                     );

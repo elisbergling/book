@@ -63,28 +63,32 @@ class ProfileScreen extends HookWidget {
                         colors: [MyColors.blue, MyColors.purple],
                       ),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
+                      children: [
                         ProfileNumbers(
                           title: 'My Books',
                           amount: 12,
+                          index: 0,
                         ),
                         MyDivider(),
                         ProfileNumbers(
                           title: 'Liked',
                           amount: 16,
+                          index: 1,
                         ),
                         MyDivider(),
                         ProfileNumbers(
                           title: 'Following',
                           amount: 3,
+                          index: 2,
                         ),
                         MyDivider(),
                         ProfileNumbers(
                           title: 'Followers',
                           amount: 28,
+                          index: 3,
                         ),
                       ],
                     ),

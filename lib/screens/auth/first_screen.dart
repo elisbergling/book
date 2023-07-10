@@ -44,11 +44,11 @@ class FirstScreen extends StatelessWidget {
                 MyRoutes.fromRigth(const SignUpScreen()),
               );
             },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                     'Get Started',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),

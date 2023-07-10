@@ -2,10 +2,8 @@ import 'package:book/mock/mock_books.dart';
 import 'package:book/screens/home/explore_screen_widgets/book_card.dart';
 import 'package:book/screens/home/explore_screen_widgets/chip_row_botton.dart';
 import 'package:book/screens/home/explore_screen_widgets/filter_dialog.dart';
-import 'package:book/screens/home/explore_screen_widgets/my_filter_chip.dart';
 import 'package:book/style/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ExploreScreen extends StatelessWidget {
   const ExploreScreen({Key? key}) : super(key: key);

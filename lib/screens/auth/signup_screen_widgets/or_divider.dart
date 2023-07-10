@@ -8,12 +8,12 @@ class OrDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
+          children: [
             SizedBox(width: 20),
             Expanded(
               child: Divider(
@@ -30,7 +30,7 @@ class OrDivider extends StatelessWidget {
             SizedBox(width: 20),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
       ],
     );
   }
