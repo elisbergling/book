@@ -22,7 +22,7 @@ class WhiteTextTitle extends StatelessWidget {
             text,
             style: const TextStyle(
               color: MyColors.white,
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
           ),

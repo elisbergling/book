@@ -28,8 +28,8 @@ class ExploreTypeRowBotton extends HookConsumerWidget {
     final isListState = ref.watch(exploreTypeIsListProvider);
     return Expanded(
       child: Container(
-        height: 40,
-        margin: const EdgeInsets.all(5),
+        height: 50,
+        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Material(
@@ -47,7 +47,7 @@ class ExploreTypeRowBotton extends HookConsumerWidget {
                   text,
                   style: const TextStyle(
                     color: MyColors.white,
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

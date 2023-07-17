@@ -20,9 +20,7 @@ class MyTextButton extends StatelessWidget {
         onPressed: onPressed,
         style: TextButton.styleFrom(
           backgroundColor: isFilled ? MyColors.purple : MyColors.black,
-          minimumSize: const Size.fromHeight(45),
-          maximumSize: const Size.fromHeight(75),
-          padding: const EdgeInsets.all(20),
+          fixedSize: const Size.fromHeight(50),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
             side: !isFilled
@@ -37,7 +35,7 @@ class MyTextButton extends StatelessWidget {
           text,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),

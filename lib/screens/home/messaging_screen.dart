@@ -1,74 +1,79 @@
+import 'package:book/models/message.dart';
+import 'package:book/models/user.dart';
+import 'package:book/screens/home/messageing_screen_widgets.dart/messaging_bubble.dart';
+import 'package:book/style/colors.dart';
+import 'package:book/widgets/my_back_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class MessagingScreen extends StatefulWidget {
-  const MessagingScreen({Key? key}) : super(key: key);
+class MessagingScreen extends HookWidget {
+  const MessagingScreen({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
-  @override
-  MessagingScreenState createState() => MessagingScreenState();
-}
+  final MyUser user;
 
-class MessagingScreenState extends State<MessagingScreen> {
-  final TextEditingController _controller = TextEditingController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  final List<Message> _messages = [
+  static final List<Message> _messages = [
     Message(
-      sender: 'Tom',
       text: 'Hey, how are you?',
-      time: DateTime.now().subtract(const Duration(minutes: 5)),
+      time: Timestamp.now(),
       isLiked: false,
-      unread: true,
+      id: '',
+      isRead: false,
+      photoUrl: null,
+      uidFrom: '5',
+      uidTo: '4',
     ),
     Message(
-      sender: 'John',
       text: 'Hi Tom, I\'m good, thanks. How about you?',
-      time: DateTime.now().subtract(const Duration(minutes: 2)),
+      time: Timestamp.now(),
       isLiked: false,
-      unread: true,
+      id: '',
+      isRead: false,
+      photoUrl: null,
+      uidFrom: '5',
+      uidTo: '4',
     ),
     Message(
-      sender: 'Tom',
-      text: 'I\'m good too, thanks for asking.',
-      time: DateTime.now().subtract(const Duration(minutes: 1)),
+      text: 'Hi Tom, I\'m good, thanks. How about you?',
+      time: Timestamp.now(),
       isLiked: false,
-      unread: false,
+      id: '',
+      isRead: false,
+      photoUrl: null,
+      uidFrom: '5',
+      uidTo: '4',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController controller = useTextEditingController();
+    final messages = useState(_messages);
     return Scaffold(
-      backgroundColor: const Color(0xFFE5E5E5),
       appBar: AppBar(
-        backgroundColor: const Color(0xffF8F8F8),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+        leading: const MyBackButton(),
+        title: Row(
+          children: [
+            const CircleAvatar(backgroundColor: MyColors.green, radius: 15),
+            const SizedBox(width: 10),
+            Text(
+              user.name,
+              style: const TextStyle(
+                color: MyColors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
-        title: const Text(
-          'Tom',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: <Widget>[
+        actions: [
           IconButton(
             icon: const Icon(
               Icons.more_horiz,
-              color: Colors.black,
             ),
             onPressed: () {},
           ),
@@ -101,7 +106,7 @@ class MessagingScreenState extends State<MessagingScreen> {
                 ),
                 Expanded(
                   child: TextField(
-                    controller: _controller,
+                    controller: controller,
                     decoration: const InputDecoration.collapsed(
                       hintText: 'Send a message...',
                     ),
@@ -113,20 +118,20 @@ class MessagingScreenState extends State<MessagingScreen> {
                     color: Colors.blue,
                   ),
                   onPressed: () {
-                    final text = _controller.text;
-                    _controller.clear();
-                    setState(() {
-                      _messages.insert(
-                        0,
-                        Message(
-                          sender: 'Me',
-                          text: text,
-                          time: DateTime.now(),
-                          isLiked: false,
-                          unread: true,
-                        ),
-                      );
-                    });
+                    controller.clear();
+                    messages.value.insert(
+                      0,
+                      Message(
+                        text: controller.text,
+                        time: Timestamp.now(),
+                        isLiked: false,
+                        id: '',
+                        isRead: false,
+                        photoUrl: null,
+                        uidFrom: '5',
+                        uidTo: '4',
+                      ),
+                    );
                   },
                 ),
               ],
@@ -136,82 +141,4 @@ class MessagingScreenState extends State<MessagingScreen> {
       ),
     );
   }
-}
-
-class MessageBubble extends StatelessWidget {
-  final Message message;
-
-  const MessageBubble({
-    Key? key,
-    required this.message,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final bgGradient = message.isMe
-        ? [Colors.blue[800]!, Colors.blue[600]!]
-        : [Colors.grey[300]!, Colors.grey[300]!];
-
-    final messageTextStyle = TextStyle(
-      color: message.isMe ? Colors.white : Colors.black,
-      fontSize: 16,
-    );
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: bgGradient,
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-        ),
-        borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(20),
-          topRight: const Radius.circular(20),
-          bottomLeft: message.isMe
-              ? const Radius.circular(20)
-              : const Radius.circular(0),
-          bottomRight: message.isMe
-              ? const Radius.circular(0)
-              : const Radius.circular(20),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment:
-            message.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Text(
-            message.text,
-            style: messageTextStyle,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            message.time.toString(),
-            style: TextStyle(
-              color: message.isMe ? Colors.white54 : Colors.black54,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Message {
-  final String sender;
-  final String text;
-  final DateTime time;
-  final bool isLiked;
-  final bool unread;
-  bool get isMe => sender == 'Me';
-
-  Message({
-    required this.sender,
-    required this.text,
-    required this.time,
-    required this.isLiked,
-    required this.unread,
-  });
 }

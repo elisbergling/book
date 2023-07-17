@@ -17,8 +17,8 @@ class ExploreScreen extends StatelessWidget {
           SliverAppBar(
             elevation: 20,
             backgroundColor: MyColors.black,
-            expandedHeight: 200,
-            collapsedHeight: 200,
+            expandedHeight: 210,
+            collapsedHeight: 210,
             floating: true,
             bottom: const ChipRowBotton(),
             flexibleSpace: Container(
@@ -41,10 +41,11 @@ class ExploreScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 10),
                     const Text(
                       'Explore',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),

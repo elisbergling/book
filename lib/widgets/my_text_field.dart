@@ -23,7 +23,7 @@ class MyTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      height: !isMultiLine ? 40 : null,
+      //height: !isMultiLine ? 40 : null,
       child: TextFormField(
         validator: validator,
         minLines: 1,
@@ -51,6 +51,20 @@ class MyTextField extends StatelessWidget {
             ),
           ),
           focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderSide: BorderSide(
+              width: 1,
+              color: MyColors.purple,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            borderSide: BorderSide(
+              width: 1,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+          focusedErrorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(20)),
             borderSide: BorderSide(
               width: 1,

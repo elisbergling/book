@@ -83,7 +83,8 @@ class BookScreen extends HookWidget {
                 ),
               ),
               Positioned(
-                top: backgroundTopOffset.value,
+                top: backgroundTopOffset.value +
+                    MediaQuery.of(context).padding.top,
                 left: 0,
                 right: 0,
                 child: Row(
@@ -163,7 +164,7 @@ class BookScreen extends HookWidget {
                                     book.title,
                                     style: const TextStyle(
                                       color: MyColors.white,
-                                      fontSize: 20,
+                                      fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     overflow: TextOverflow.ellipsis,
@@ -172,7 +173,7 @@ class BookScreen extends HookWidget {
                                     book.author,
                                     style: const TextStyle(
                                       color: MyColors.ligthGrey,
-                                      fontSize: 14,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -198,7 +199,7 @@ class BookScreen extends HookWidget {
                           ],
                         ),
                         const WhiteTextTitle(text: 'Location'),
-                        LocationWidget(text: 'locatuon'),
+                        LocationWidget(text: book.location.country),
                         const WhiteTextTitle(text: 'Book Description'),
                         ExpandebleText(
                           text: book.bookDescription,

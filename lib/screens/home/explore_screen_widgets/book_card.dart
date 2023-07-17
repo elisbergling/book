@@ -110,7 +110,7 @@ class BookCard extends HookWidget {
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: MyColors.white,
                 ),
@@ -121,23 +121,23 @@ class BookCard extends HookWidget {
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   color: MyColors.ligthGrey,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Icon(
                     Icons.location_on_outlined,
                     color: MyColors.ligthGrey,
-                    size: 18,
+                    size: 24,
                   ),
                   Text(
-                    book.location.toString(),
+                    book.location.country,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       color: MyColors.ligthGrey,
                     ),
                   ),

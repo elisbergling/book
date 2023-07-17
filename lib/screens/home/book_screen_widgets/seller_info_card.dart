@@ -1,3 +1,5 @@
+import 'package:book/mock/mock_locations.dart';
+import 'package:book/models/user.dart';
 import 'package:book/screens/home/book_screen_widgets/location_widget.dart';
 import 'package:book/screens/home/messaging_screen.dart';
 import 'package:book/screens/home/profile_screen.dart';
@@ -60,7 +62,17 @@ class SellerInfoCard extends StatelessWidget {
                 CircularButton(
                   icon: Icons.message_outlined,
                   onPressed: () => Navigator.of(context)
-                      .push(MyRoutes.fromRigth(const MessagingScreen())),
+                      .push(MyRoutes.fromRigth(MessagingScreen(
+                    user: MyUser(
+                      uid: '56',
+                      name: 'TIM',
+                      email: 'svf',
+                      profileImageUrl: '',
+                      bookIds: [],
+                      followingUserIds: [],
+                      location: mockLocations[0],
+                    ),
+                  ))),
                   dark: false,
                 )
               ],

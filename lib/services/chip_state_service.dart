@@ -3,11 +3,11 @@ import 'package:book/utils/enums.dart';
 import 'package:flutter/material.dart';
 
 class ChipState extends ChangeNotifier {
-  final bool isAddBook;
-
   ChipState({required this.isAddBook});
 
-  late Map<ChipType, List<MyChip>> startState = isAddBook
+  final bool isAddBook;
+
+  late final Map<ChipType, List<MyChip>> _startState = isAddBook
       ? {
           ChipType.genre: [],
           ChipType.language: [],
@@ -23,8 +23,8 @@ class ChipState extends ChangeNotifier {
           ],
         };
 
-  late Map<ChipType, List<MyChip>> tempState = _deepCopy(startState);
-  late Map<ChipType, List<MyChip>> realState = _deepCopy(startState);
+  late Map<ChipType, List<MyChip>> tempState = _deepCopy(_startState);
+  late Map<ChipType, List<MyChip>> realState = _deepCopy(_startState);
 
   bool isMarked(MyChip chip) {
     return tempState[chip.type]!.any((element) => element.label == chip.label);

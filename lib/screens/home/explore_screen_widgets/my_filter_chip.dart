@@ -67,25 +67,22 @@ class MyFilterChipWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(4),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: FilterChip(
+        shape: StadiumBorder(
+          side: BorderSide(
             width: 1.2,
             color: isSelected ? MyColors.purple : MyColors.ligthGrey,
           ),
         ),
-        child: FilterChip(
-          label: Text(text),
-          selected: isSelected,
-          onSelected: (_) => onPressed(),
-          showCheckmark: false,
-          selectedColor: MyColors.purple.withOpacity(0.1),
-          backgroundColor: MyColors.darkGrey,
-          labelStyle: const TextStyle(
-            color: MyColors.white,
-          ),
+        label: Text(text),
+        selected: isSelected,
+        onSelected: (_) => onPressed(),
+        showCheckmark: false,
+        selectedColor: MyColors.purple.withOpacity(0.1),
+        backgroundColor: MyColors.darkGrey,
+        labelStyle: const TextStyle(
+          color: MyColors.white,
         ),
       ),
     );

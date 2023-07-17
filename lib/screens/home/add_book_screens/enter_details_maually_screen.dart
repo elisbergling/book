@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:book/mock/mock_locations.dart';
 import 'package:book/models/book.dart';
+import 'package:book/providers/change_notifier_provider.dart';
 import 'package:book/screens/home/add_book_screens/enter_dattails_manually_screen_widgets/row_submit_button.dart';
 import 'package:book/screens/home/book_screen.dart';
 import 'package:book/style/colors.dart';
@@ -13,13 +16,16 @@ import 'package:book/widgets/my_back_button_app_bar.dart';
 import 'package:book/widgets/white_text_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
-class EnterDetailsManuallyScreen extends HookWidget {
+class EnterDetailsManuallyScreen extends HookConsumerWidget {
   const EnterDetailsManuallyScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    final chipState = ref.watch(addBookChipChnageNotifierProvider);
     final titleController = useTextEditingController();
     final authorController = useTextEditingController();
     final bookDecriptionController = useTextEditingController();
@@ -31,6 +37,7 @@ class EnterDetailsManuallyScreen extends HookWidget {
     final sellState = useState(false);
     final rentState = useState(false);
     final swapState = useState(false);
+    final imagesState = useState<List<XFile>?>(null);
     final isDuration = useState<bool?>(null);
     final timeRangeState = useState<DateTimeRange?>(null);
     return Scaffold(
@@ -81,7 +88,15 @@ class EnterDetailsManuallyScreen extends HookWidget {
                   const SizedBox(width: 20),
                   RowSubmitButton(
                     icon: Icons.camera_alt_outlined,
-                    onPressed: () {},
+                    onPressed: () async {
+                      if (!Platform.isWindows) {
+                        XFile? image = await ImagePicker()
+                            .pickImage(source: ImageSource.camera);
+                        if (image != null) {
+                          imagesState.value = [...imagesState.value!, image];
+                        }
+                      }
+                    },
                     text: 'Camera',
                   ),
                   RowSubmitButton(
@@ -173,6 +188,10 @@ class EnterDetailsManuallyScreen extends HookWidget {
                             controller: sellingPriceController,
                             labelText: 'Selling Price',
                             keyBoardType: TextInputType.number,
+                            validator: (value) =>
+                                value!.isEmpty && sellState.value
+                                    ? 'Price can\'t be empty'
+                                    : null,
                           ),
                         ),
                         const Text(
@@ -197,6 +216,10 @@ class EnterDetailsManuallyScreen extends HookWidget {
                             controller: leasingPriceController,
                             labelText: 'Lease Price',
                             keyBoardType: TextInputType.number,
+                            validator: (value) =>
+                                value!.isEmpty && rentState.value
+                                    ? 'Price can\'t be empty'
+                                    : null,
                           ),
                         ),
                         const Text(
@@ -259,6 +282,11 @@ class EnterDetailsManuallyScreen extends HookWidget {
                                 controller: durationController,
                                 labelText: 'Lease Duration',
                                 keyBoardType: TextInputType.number,
+                                validator: (value) => value!.isEmpty &&
+                                        rentState.value &&
+                                        isDuration.value!
+                                    ? 'Duration can\'t be empty'
+                                    : null,
                               ),
                             ),
                             const Text(
@@ -290,10 +318,21 @@ class EnterDetailsManuallyScreen extends HookWidget {
                       rentState.value ||
                       swapState.value)) {
                     errors.add('Either sell, rent or swap is required');
-                  }
-                  if (isDuration.value == null && rentState.value) {
+                  } else if (isDuration.value == null && rentState.value) {
                     errors
                         .add('Either lease duration or time range is required');
+                  } else if (rentState.value &&
+                      !isDuration.value! &&
+                      timeRangeState.value == null) {
+                    errors.add('Time range need to have a valid range');
+                  }
+
+                  if (chipState.tempState[ChipType.genre]!.isEmpty) {
+                    errors.add('At least one genre is required');
+                  }
+
+                  if (chipState.tempState[ChipType.language]!.isEmpty) {
+                    errors.add('One language is required');
                   }
 
                   if (!formKey.currentState!.validate()) {
@@ -341,11 +380,6 @@ class EnterDetailsManuallyScreen extends HookWidget {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        behavior: SnackBarBehavior.floating,
-                        backgroundColor: MyColors.darkGrey,
                         content: Column(
                           children: [
                             for (String error in errors)

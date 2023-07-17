@@ -1,7 +1,7 @@
 import 'package:book/models/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class MyUser {
   final String uid;
   final String name;
   final String email;
@@ -10,7 +10,7 @@ class User {
   final List<String> followingUserIds;
   final Location location;
 
-  User({
+  MyUser({
     required this.uid,
     required this.name,
     required this.email,
@@ -20,10 +20,10 @@ class User {
     required this.location,
   });
 
-  factory User.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return User(
-      uid: doc.id,
+  factory MyUser.fromJson(DocumentSnapshot doc) {
+    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return MyUser(
+      uid: data['uid'],
       name: data['name'],
       email: data['email'],
       profileImageUrl: data['profileImageUrl'],
@@ -33,8 +33,9 @@ class User {
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toJson() {
     return {
+      'uid': uid,
       'name': name,
       'email': email,
       'profileImageUrl': profileImageUrl,
