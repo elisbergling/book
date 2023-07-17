@@ -66,6 +66,7 @@ class SellerInfoCard extends StatelessWidget {
                     user: MyUser(
                       uid: '56',
                       name: 'TIM',
+                      username: 'vdfvd',
                       email: 'svf',
                       profileImageUrl: '',
                       bookIds: [],

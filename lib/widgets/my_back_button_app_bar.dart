@@ -5,7 +5,10 @@ class MyBackButtonAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   const MyBackButtonAppBar({
     super.key,
+    this.navigation,
   });
+
+  final Function()? navigation;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,7 @@ class MyBackButtonAppBar extends StatelessWidget
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: const MyBackButton(dark: false),
+        leading: MyBackButton(dark: false, navigation: navigation),
       ),
     );
   }

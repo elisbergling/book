@@ -5,6 +5,8 @@ import 'package:book/screens/auth/signup_screen_widgets/social_login_button.dart
 import 'package:book/style/colors.dart';
 import 'package:book/widgets/my_back_button_app_bar.dart';
 import 'package:book/widgets/submit_button.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -47,40 +49,43 @@ class SignUpScreen extends HookConsumerWidget {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Username can\'t be empty';
-                    } else if (true) {
-                      //TODO implement to match against database
-                      return null;
+                    } else if (value.contains(' ')) {
+                      return 'Username can\'t contain space';
+                    } else if (value.contains('-')) {
+                      return 'Username can\'t contain "-"';
+                    } else if (value.contains('.')) {
+                      return 'Username can\'t contain "."';
                     }
+                    return null;
                   },
                 ),
               MyTextField(
-                  controller: emailController,
-                  labelText: 'Email',
-                  keyBoardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Email can\'t be empty';
-                    } else if (emailController.text.contains('@')) {
-                      //emailController.text.
-                      // AuthCredential(providerId: providerId, signInMethod: signInMethod)
-                      return null;
-                    } else if (true) {
-                      //TODO implement email verification
-                      return null;
-                    }
-                  }),
+                controller: emailController,
+                labelText: 'Email',
+                keyBoardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Email can\'t be empty';
+                  } else if (!EmailValidator.validate(value)) {
+                    return 'Please enter a valid email';
+                  }
+
+                  return null;
+                },
+              ),
               MyTextField(
-                  controller: passowrdController,
-                  labelText: 'Password',
-                  obscureText: true,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Password can\'t be empty';
-                    } else if (value.length < 8) {
-                      return 'Password must be atleast 8 carcters long';
-                    }
-                    return null;
-                  }),
+                controller: passowrdController,
+                labelText: 'Password',
+                obscureText: true,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Password can\'t be empty';
+                  } else if (value.length < 8) {
+                    return 'Password must be atleast 8 carcters long';
+                  }
+                  return null;
+                },
+              ),
               if (isSignUp.value)
                 MyTextField(
                   controller: confirmPassowrdController,
@@ -88,36 +93,54 @@ class SignUpScreen extends HookConsumerWidget {
                   obscureText: true,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Name can\'t be empty';
+                      return 'Confiramtion password can\'t be empty';
                     } else if (passowrdController.text != value) {
                       return 'Confiramtion password must be the same as the password';
                     }
                     return null;
                   },
                 ),
+              if (authState.error.isNotEmpty)
+                Container(
+                  height: 60,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: MyColors.darkGrey,
+                  ),
+                  child: Center(
+                    child: Text(
+                      authState.error,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: MyColors.white,
+                      ),
+                    ),
+                  ),
+                ),
               SubmitButton(
-                onPressed: () {
+                onPressed: () async {
                   if (formKey.currentState!.validate()) {
+                    final User? res;
                     if (isSignUp.value) {
-                      ref.read(authProvider).signUpWithEmail(
-                            email: emailController.text,
-                            password: passowrdController.text,
-                          );
+                      res =
+                          await ref.read(authProvider.notifier).signUpWithEmail(
+                                email: emailController.text,
+                                password: passowrdController.text,
+                                name: nameController.text,
+                                username: userNameController.text,
+                              );
                     } else {
-                      ref.read(authProvider).loginWithEmail(
-                            email: emailController.text,
-                            password: passowrdController.text,
-                          );
+                      res =
+                          await ref.read(authProvider.notifier).loginWithEmail(
+                                email: emailController.text,
+                                password: passowrdController.text,
+                              );
                     }
-                    if (authState.error != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            authState.error!,
-                          ),
-                        ),
-                      );
-                      //authState.error = null;
+                    if (res != null && context.mounted) {
+                      Navigator.of(context).pop();
                     }
                   }
                 },

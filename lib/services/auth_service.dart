@@ -1,52 +1,42 @@
+import 'package:book/mock/mock_locations.dart';
+import 'package:book/models/service_data.dart';
 import 'package:book/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AuthService with ChangeNotifier {
-  AuthService({
-    required this.auth,
-  });
+class AuthService extends Notifier<ServiceData> {
+  @override
+  ServiceData build() {
+    return const ServiceData(
+      error: '',
+      isLoading: false,
+    );
+  }
 
-  final FirebaseAuth auth;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
-  CollectionReference userCollection =
+  final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-  String? _error;
-  String? get error => _error;
-  set error(error) => _error = error;
+  void toggleLoading() {
+    state = state.copyWith(isLoading: !state.isLoading);
+  }
 
-  Future<void> createUser({required MyUser user}) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      await userCollection.doc(user.uid).set(user.toJson());
-    } on Exception catch (exception, _) {
-      print(exception);
-      _error = exception.toString();
-      notifyListeners();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+  void setError(String error) {
+    print(error);
+    state = state.copyWith(error: error);
   }
 
   Future<void> logOut() async {
     try {
-      _isLoading = true;
-      notifyListeners();
+      toggleLoading();
       await auth.signOut();
     } on Exception catch (exception, _) {
-      print(exception);
-      _error = exception.toString();
-      notifyListeners();
+      setError(exception.toString());
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
     }
   }
 
@@ -55,8 +45,7 @@ class AuthService with ChangeNotifier {
     required String password,
   }) async {
     try {
-      _isLoading = true;
-      notifyListeners();
+      toggleLoading();
       final res = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -64,79 +53,80 @@ class AuthService with ChangeNotifier {
       return res.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-        _error = 'No user found for that email.';
+        setError('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-        _error = 'Wrong password provided for that user.';
+        setError('Wrong password provided for that user.');
       }
-      notifyListeners();
       return null;
     } on Exception catch (exception, _) {
-      print(exception);
-      _error = exception.toString();
-      notifyListeners();
+      setError(exception.toString());
+      return null;
+    } catch (e) {
+      setError(e.toString());
       return null;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
     }
   }
 
   Future<User?> signUpAnonymously() async {
     try {
-      _isLoading = true;
-      notifyListeners();
+      toggleLoading();
       final res = await auth.signInAnonymously();
       return res.user;
     } on Exception catch (exception, _) {
-      print(exception);
-      _error = exception.toString();
-      notifyListeners();
+      setError(exception.toString());
       return null;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
     }
   }
 
   Future<User?> signUpWithEmail({
     required String email,
     required String password,
+    required String name,
+    required String username,
   }) async {
     try {
-      _isLoading = true;
-      notifyListeners();
+      toggleLoading();
       final res = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      MyUser user = MyUser(
+        uid: res.user!.uid,
+        name: name,
+        username: username,
+        email: email,
+        bookIds: [],
+        followingUserIds: [],
+        location: mockLocations[0],
+        profileImageUrl: '',
+      );
+      await userCollection.doc(res.user?.uid).set(user.toJson());
       return res.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-        _error = 'The password provided is too weak.';
+        setError('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-        _error = 'The account already exists for that email.';
+        setError('The account already exists for that email.');
       }
-      notifyListeners();
       return null;
     } on Exception catch (exception, _) {
-      print(exception);
-      _error = exception.toString();
-      notifyListeners();
+      setError(exception.toString());
+      return null;
+    } catch (e) {
+      setError(e.toString());
       return null;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
     }
   }
 
   Future<User?> signUpWithGoogle() async {
     try {
-      _isLoading = true;
-      notifyListeners();
+      toggleLoading();
       GoogleSignIn gs = GoogleSignIn();
       final googleUser = await gs
           .signIn()
@@ -149,13 +139,11 @@ class AuthService with ChangeNotifier {
       final res = await auth.signInWithCredential(credential);
       return res.user;
     } on Exception catch (exception, _) {
-      print(exception);
-      _error = exception.toString();
-      notifyListeners();
+      setError(exception.toString());
+
       return null;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
     }
   }
 }

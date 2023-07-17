@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MyUser {
   final String uid;
   final String name;
+  final String username;
   final String email;
   final String profileImageUrl;
   final List<String> bookIds;
@@ -13,6 +14,7 @@ class MyUser {
   MyUser({
     required this.uid,
     required this.name,
+    required this.username,
     required this.email,
     required this.profileImageUrl,
     required this.bookIds,
@@ -25,6 +27,7 @@ class MyUser {
     return MyUser(
       uid: data['uid'],
       name: data['name'],
+      username: data['username'],
       email: data['email'],
       profileImageUrl: data['profileImageUrl'],
       bookIds: List<String>.from(data['bookIds']),
@@ -37,6 +40,7 @@ class MyUser {
     return {
       'uid': uid,
       'name': name,
+      'username': username,
       'email': email,
       'profileImageUrl': profileImageUrl,
       'bookIds': bookIds,

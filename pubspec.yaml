@@ -42,6 +42,7 @@ dependencies:
   cached_network_image: 
   uuid:
   image_picker: 
+  email_validator:
   permission_handler:
   google_maps_flutter: 
   google_fonts: 

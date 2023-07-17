@@ -8,13 +8,11 @@ class UserService with ChangeNotifier {
   UserService({
     required this.uid,
   });
-  final String uid;
+  final String? uid;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  String _error = '';
-  String get error => _error;
-  set error(error) => _error = error;
+  String error = '';
 
   CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
@@ -27,7 +25,7 @@ class UserService with ChangeNotifier {
           .map((doc) => MyUser.fromJson(doc));
     } on Exception catch (exception, _) {
       print(exception);
-      _error = exception.toString();
+      error = exception.toString();
       notifyListeners();
       return null;
     }
@@ -41,7 +39,7 @@ class UserService with ChangeNotifier {
           .map((event) => event.docs.map((e) => MyUser.fromJson(e)).toList());
     } on Exception catch (exception, _) {
       print(exception);
-      _error = exception.toString();
+      error = exception.toString();
       notifyListeners();
       return null;
     }
@@ -57,7 +55,7 @@ class UserService with ChangeNotifier {
           .then((event) => event.docs.map((e) => MyUser.fromJson(e)).toList());
     } on Exception catch (exception, _) {
       print(exception);
-      _error = exception.toString();
+      error = exception.toString();
       notifyListeners();
       return null;
     } finally {
@@ -74,7 +72,7 @@ class UserService with ChangeNotifier {
       return MyUser.fromJson(userJson);
     } on Exception catch (exception, _) {
       print(exception);
-      _error = exception.toString();
+      error = exception.toString();
       notifyListeners();
       return null;
     } finally {
@@ -90,7 +88,7 @@ class UserService with ChangeNotifier {
       await userCollection.doc(uid).delete();
     } on Exception catch (exception, _) {
       print(exception);
-      _error = exception.toString();
+      error = exception.toString();
       notifyListeners();
     } finally {
       _isLoading = false;
@@ -103,7 +101,7 @@ class UserService with ChangeNotifier {
       _isLoading = true;
       notifyListeners();
       String? url =
-          await ProviderContainer().read(imageProvider).getDownloadUrl(uid);
+          await ProviderContainer().read(imageProvider).getDownloadUrl(uid!);
       if (url == null) {
         throw Exception('No url');
       }
@@ -112,7 +110,7 @@ class UserService with ChangeNotifier {
       });
     } on Exception catch (exception, _) {
       print(exception);
-      _error = exception.toString();
+      error = exception.toString();
       notifyListeners();
     } finally {
       _isLoading = false;
@@ -131,7 +129,7 @@ class UserService with ChangeNotifier {
       });
     } on Exception catch (exception, _) {
       print(exception);
-      _error = exception.toString();
+      error = exception.toString();
       notifyListeners();
     } finally {
       _isLoading = false;
