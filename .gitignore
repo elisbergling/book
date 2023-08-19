@@ -45,6 +45,7 @@ app.*.map.json
 
 #firebase
 /lib/firebase_options.dart
+/android/app/google-services.json
 
 #maps
-android/app/src/main/AndroidManifest.xml
+/android/app/src/main/res/values/api_keys.xml
