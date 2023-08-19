@@ -28,6 +28,11 @@ class MyApp extends HookConsumerWidget {
       title: 'Book App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scrollbarTheme: ScrollbarThemeData(
+          thumbColor: MaterialStateProperty.all(MyColors.purple),
+          trackColor: MaterialStateProperty.all(MyColors.darkGrey),
+          radius: const Radius.circular(10),
+        ),
         snackBarTheme: SnackBarThemeData(
           behavior: SnackBarBehavior.floating,
           backgroundColor: MyColors.darkGrey,

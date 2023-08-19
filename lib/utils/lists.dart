@@ -12,6 +12,7 @@ class Lists {
     'History',
     'Poetry',
   ];
+
   static List<String> langueges = [
     'English',
     'Swedish',
@@ -24,11 +25,19 @@ class Lists {
     'Swahili',
     'Mandarin',
   ];
+
   static List<String> sortBy = [
-    'Price Increasing',
-    'Price Decreasing',
-    'Distance',
-    'Rating',
-    'Popularity',
+    'Sell Price Increasing',
+    'Sell Price Decreasing',
+    'Rent Rate Increasing',
+    'Rent Rate Decreasing',
+    'Distance Increasing',
+    'Distance Decreasing',
+    'Date Added Increasing',
+    'Date Added Decreasing',
+    'Rating Increasing',
+    'Rating Decreasing',
+    'Popularity Increasing',
+    'Popularity Increasing',
   ];
 }

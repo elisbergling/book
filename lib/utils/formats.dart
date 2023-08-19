@@ -1,33 +1,34 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Formats {
-  static String leaseTime({
-    required bool isLeaseDuration,
-    DateTimeRange? leaseTimeRange,
-    int? leaseDuration,
+  static String rentTime({
+    required bool isRentDuration,
+    Timestamp? rentStartDate,
+    Timestamp? rentEndDate,
+    int? rentDuration,
   }) {
-    return isLeaseDuration
-        ? 'for $leaseDuration days'
-        : formatTimeRange(leaseTimeRange!);
+    return isRentDuration
+        ? 'for $rentDuration days'
+        : formatTimeRange(rentStartDate!, rentEndDate!);
   }
 
-  static String leaseTimeShort({
-    required bool isLeaseDuration,
-    DateTimeRange? leaseTimeRange,
-    int? leaseDuration,
+  static String rentTimeShort({
+    required bool isRentDuration,
+    Timestamp? rentStartDate,
+    Timestamp? rentEndDate,
+    int? rentDuration,
   }) {
-    return leaseTime(
-            isLeaseDuration: isLeaseDuration,
-            leaseTimeRange: leaseTimeRange,
-            leaseDuration: leaseDuration)
-        .split(' ')
-        .skip(1)
-        .join(' ');
+    return rentTime(
+      isRentDuration: isRentDuration,
+      rentStartDate: rentStartDate,
+      rentEndDate: rentEndDate,
+      rentDuration: rentDuration,
+    ).split(' ').skip(1).join(' ');
   }
 
-  static String formatTimeRange(DateTimeRange leaseTimeRange) {
-    DateTime start = leaseTimeRange.start;
-    DateTime end = leaseTimeRange.end;
+  static String formatTimeRange(Timestamp startTime, Timestamp endTime) {
+    DateTime start = startTime.toDate();
+    DateTime end = endTime.toDate();
     return 'from ${start.day} ${monthInText(start.month)} to ${end.day} ${monthInText(end.month)}';
   }
 

@@ -31,7 +31,7 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     final double progress =
         shrinkOffset >= gapHeigth ? gapHeigth : shrinkOffset;
-    final currentShapeBorder = shapeBorder.scale(progress);
+    final ShapeBorder currentShapeBorder = shapeBorder.scale(progress);
 
     return Stack(
       children: [

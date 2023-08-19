@@ -8,7 +8,7 @@ class MyNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 90,
       width: MediaQuery.of(context).size.width - 30,
       decoration: const BoxDecoration(
         color: MyColors.black,

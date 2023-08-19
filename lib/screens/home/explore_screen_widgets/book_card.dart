@@ -18,11 +18,11 @@ class BookCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSell = useState(false);
-    final showRent = useState(false);
-    final showSwap = useState(false);
+    final ValueNotifier<bool> showSell = useState(false);
+    final ValueNotifier<bool> showRent = useState(false);
+    final ValueNotifier<bool> showSwap = useState(false);
     return GestureDetector(
-      onTap: () => Navigator.of(context)
+      onTap: () async => await Navigator.of(context)
           .push(MyRoutes.fromRigth(BookScreen(book: book))),
       child: Container(
         margin: const EdgeInsets.all(10),
@@ -176,7 +176,7 @@ class BookCard extends HookWidget {
                     MyTextButton(
                       onPressed: () {},
                       text:
-                          'Rent for ${book.leasePrice!.round()} kr ${book.leaseTime}',
+                          'Rent for ${book.rentPrice!.round()} kr ${book.rentTime}',
                       isFilled: true,
                     ),
                   ],

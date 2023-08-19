@@ -13,10 +13,10 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Color> bgGradient = !message.isMe('7')
-        ? [MyColors.blue, MyColors.purple]
-        : [MyColors.darkGrey, MyColors.darkGrey];
+        ? <Color>[MyColors.blue, MyColors.purple]
+        : <Color>[MyColors.darkGrey, MyColors.darkGrey];
 
-    final messageTextStyle = TextStyle(
+    final TextStyle messageTextStyle = TextStyle(
       color: message.isMe('8')
           ? Colors.white
           : const Color.fromARGB(210, 242, 242, 242),

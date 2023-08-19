@@ -23,7 +23,7 @@ class SocialLoginButton extends StatelessWidget {
 
   final VoidCallback? onPressed;
 
-  final _defaultImagePath = "lib/assets/logos/";
+  final String _defaultImagePath = "lib/assets/logos/";
 
   @override
   Widget build(BuildContext context) {

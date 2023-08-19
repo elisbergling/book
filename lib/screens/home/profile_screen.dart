@@ -1,15 +1,18 @@
-import 'package:book/mock/mock_books.dart';
+import 'package:book/providers/book_providers.dart';
 import 'package:book/screens/home/explore_screen_widgets/book_card.dart';
 import 'package:book/screens/home/profile_screen_widgets/my_divider.dart';
 import 'package:book/screens/home/profile_screen_widgets/my_sliver_persistent_header_delegate.dart';
 import 'package:book/screens/home/profile_screen_widgets/profile_numbers.dart';
 import 'package:book/screens/home/profile_screen_widgets/profile_wave_shape_border.dart';
 import 'package:book/style/colors.dart';
+import 'package:book/widgets/error_widget.dart';
+import 'package:book/widgets/loading_widget.dart';
 import 'package:book/widgets/my_back_button_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ProfileScreen extends HookWidget {
+class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({
     super.key,
     this.isOwn = true,
@@ -19,10 +22,11 @@ class ProfileScreen extends HookWidget {
   final bool isOwn;
 
   @override
-  Widget build(BuildContext context) {
-    final scrollController = useScrollController();
-    final columnController = useScrollController();
-    final backgroundBottomOffset = useState(0.0);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ScrollController scrollController = useScrollController();
+    final ScrollController columnController = useScrollController();
+    final ValueNotifier<double> backgroundBottomOffset = useState(0.0);
+    final myBooks = ref.watch(myBooksProvider);
 
     useEffect(() {
       scrollController.addListener(() {
@@ -41,6 +45,8 @@ class ProfileScreen extends HookWidget {
       backgroundColor: MyColors.black,
       body: SafeArea(
         child: CustomScrollView(
+          key: GlobalKey(debugLabel: 'Profile'),
+          physics: const BouncingScrollPhysics(),
           controller: scrollController,
           slivers: [
             SliverPersistentHeader(
@@ -134,11 +140,21 @@ class ProfileScreen extends HookWidget {
                 ),
               ),
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: mockBooks.length,
-                (context, index) =>
-                    BookCard(book: mockBooks[index], onTap: () {}),
+            myBooks.when(
+              error: (e, s) => SliverList(
+                delegate: SliverChildListDelegate([
+                  MyErrorWidget(e: e, s: s),
+                ]),
+              ),
+              loading: () => SliverList(
+                delegate: SliverChildListDelegate([
+                  const LoadingWidget(),
+                ]),
+              ),
+              data: (books) => SliverList.builder(
+                itemCount: books.length,
+                itemBuilder: (context, index) =>
+                    BookCard(book: books[index], onTap: () {}),
               ),
             ),
           ],

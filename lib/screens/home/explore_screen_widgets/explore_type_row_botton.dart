@@ -25,7 +25,7 @@ class ExploreTypeRowBotton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isListState = ref.watch(exploreTypeIsListProvider);
+    final bool isListState = ref.watch(exploreTypeIsListProvider);
     return Expanded(
       child: Container(
         height: 50,

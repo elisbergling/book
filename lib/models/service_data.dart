@@ -19,4 +19,19 @@ class ServiceData {
       isLoading: isLoading ?? this.isLoading,
     );
   }
+
+  ServiceData toggle() {
+    return ServiceData(
+      error: error,
+      isLoading: !isLoading,
+    );
+  }
+
+  ServiceData setError({required Object error}) {
+    String e = error as String;
+    return ServiceData(
+      error: e,
+      isLoading: isLoading,
+    );
+  }
 }

@@ -1,4 +1,6 @@
 import 'package:book/providers/change_notifier_provider.dart';
+import 'package:book/providers/state_provider.dart';
+import 'package:book/screens/home/add_book_screens/enter_dattails_manually_screen_widgets/row_submit_button.dart';
 import 'package:book/screens/home/explore_screen_widgets/my_text_button.dart';
 import 'package:book/style/colors.dart';
 import 'package:book/utils/chips.dart';
@@ -12,6 +14,9 @@ class FilterDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sliderState = ref.watch(sliderChnageNotifierProvider);
+    final isBuy = ref.watch(isBuyProvider);
+    final isRent = ref.watch(isRentProvider);
+    final isSwap = ref.watch(isSwapProvider);
     return Container(
       decoration: const BoxDecoration(
         color: MyColors.black,
@@ -57,7 +62,7 @@ class FilterDialog extends HookConsumerWidget {
               const SizedBox(height: 20),
               Slider(
                 value: sliderState.price,
-                onChanged: (value) {
+                onChanged: (double value) {
                   ref.read(sliderChnageNotifierProvider.notifier).price = value;
                 },
                 activeColor: MyColors.purple,
@@ -87,7 +92,7 @@ class FilterDialog extends HookConsumerWidget {
               const SizedBox(height: 20),
               Slider(
                 value: sliderState.rating,
-                onChanged: (value) {
+                onChanged: (double value) {
                   ref.read(sliderChnageNotifierProvider.notifier).rating =
                       value;
                 },
@@ -118,7 +123,7 @@ class FilterDialog extends HookConsumerWidget {
               const SizedBox(height: 20),
               Slider(
                 value: sliderState.distance,
-                onChanged: (value) {
+                onChanged: (double value) {
                   ref.read(sliderChnageNotifierProvider.notifier).distance =
                       value;
                 },
@@ -151,6 +156,34 @@ class FilterDialog extends HookConsumerWidget {
               const SizedBox(height: 20),
               Chips.wrapChips(false, ChipType.sortBy),
               const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    RowSubmitButton(
+                      onPressed: () =>
+                          ref.read(isBuyProvider.notifier).state = !isBuy,
+                      icon: Icons.sell_outlined,
+                      text: 'Sell',
+                      isFilled: isBuy,
+                    ),
+                    RowSubmitButton(
+                      onPressed: () =>
+                          ref.read(isBuyProvider.notifier).state = !isRent,
+                      icon: Icons.timer_outlined,
+                      text: 'Lease',
+                      isFilled: isRent,
+                    ),
+                    RowSubmitButton(
+                      onPressed: () =>
+                          ref.read(isBuyProvider.notifier).state = !isSwap,
+                      icon: Icons.swap_horiz_rounded,
+                      text: 'Swap',
+                      isFilled: isSwap,
+                    ),
+                  ],
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

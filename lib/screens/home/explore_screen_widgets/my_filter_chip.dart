@@ -24,7 +24,7 @@ class MyFilterChip extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chipState = ref.watch(provider());
+    final ChipState chipState = ref.watch(provider());
     return MyFilterChipWidget(
       isSelected: chipState.isMarked(chip),
       text: chip.label,

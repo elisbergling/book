@@ -1,68 +1,111 @@
 import 'dart:io';
 
+import 'package:book/providers/auth_provider.dart';
+import 'package:book/providers/state_provider.dart';
+import 'package:book/services/service_notifier.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageService with ChangeNotifier {
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-  String _error = '';
-  String get error => _error;
+class ImageService extends ServiceNotifier {
+  late final String? uid = ref.watch(firebaseAuthProvider).currentUser?.uid;
+  static final Reference referance = FirebaseStorage.instance.ref();
+  Reference userRef = referance.child('users/');
+  Reference bookRef = referance.child('books/');
+  Reference messageRef = referance.child('messages/');
+  ImagePicker imagePicker = ImagePicker();
 
-  Reference referance = FirebaseStorage.instance.ref();
-
-  Future<void> uploadFile(
-    String uid,
-    ImageSource imageSource,
-  ) async {
+  Future<XFile?> takePhoto({
+    required ImageSource imageSource,
+  }) async {
     try {
-      _isLoading = true;
-      notifyListeners();
-      Reference ref = referance.child(uid);
-      XFile? file = await ImagePicker().pickImage(source: imageSource);
+      toggleLoading();
+      XFile? file = await imagePicker.pickImage(source: imageSource);
       if (file == null) {
-        print("No file was selected");
-        return;
+        throw Exception('No file was selected');
       }
-      ref.putFile(File(file.path));
-      //     .then((_) async => await ProviderContainer()
-      //         .read(userProvider)
-      //         .updateImgUrl(uid: uid))
-      //     .onError((error, stackTrace) {
-      //   print('error: ' +
-      //       error.toString() +
-      //       'stackTrace: ' +
-      //       stackTrace.toString());
-      //   _error = error.toString();
-      //   notifyListeners();
-      // });
-    } on Exception catch (exception, _) {
-      print(exception);
-      _error = exception.toString();
-      notifyListeners();
-      return;
+      return file;
+    } catch (e) {
+      setError(e);
+      return null;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
     }
   }
 
-  Future<String?> getDownloadUrl(String uid) async {
+  Future<String?> _uploadFile({
+    required XFile file,
+    required Reference referenceName,
+    int index = 0,
+    int amount = 1,
+  }) async {
     try {
-      _isLoading = true;
-      notifyListeners();
-      Reference ref = FirebaseStorage.instance.ref().child(uid);
-      String url = await ref.getDownloadURL();
+      toggleLoading();
+      String? url;
+      referenceName.putFile(File(file.path)).snapshotEvents.listen((event) {
+        ref.read(uploadProgressProcentProvider.notifier).state =
+            (index / amount) +
+                ((event.bytesTransferred / event.totalBytes) / amount);
+      }).onDone(() async {
+        ref.read(uploadProgressProcentProvider.notifier).state = 0;
+        url = await referenceName.getDownloadURL();
+      });
       return url;
-    } on Exception catch (exception, _) {
-      print(exception);
-      _error = exception.toString();
-      notifyListeners();
+    } catch (e) {
+      setError(e);
       return null;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
     }
+  }
+
+  Future<String?> uploadUser({required XFile file}) async {
+    return await _uploadFile(file: file, referenceName: userRef.child(uid!));
+  }
+
+  Future<String?> uploadBook({
+    required XFile file,
+    required String id,
+    required int index,
+    required int amount,
+  }) async {
+    return await _uploadFile(
+      file: file,
+      referenceName: bookRef.child('$id/$index'),
+      index: index,
+      amount: amount,
+    );
+  }
+
+  Future<String?> uploadMessage({
+    required XFile file,
+    required String id,
+  }) async {
+    return await _uploadFile(file: file, referenceName: messageRef.child(id));
+  }
+
+  Future<void> _deleteFile({required Reference referenceName}) async {
+    try {
+      toggleLoading();
+      await referenceName.delete();
+    } catch (e) {
+      setError(e);
+    } finally {
+      toggleLoading();
+    }
+  }
+
+  Future<void> deleteUserFile() async {
+    await _deleteFile(referenceName: userRef.child(uid!));
+  }
+
+  Future<void> deleteBookFile({
+    required String id,
+    required int index,
+  }) async {
+    await _deleteFile(referenceName: bookRef.child(id).child(index.toString()));
+  }
+
+  Future<void> deleteMessageFile({required String id}) async {
+    await _deleteFile(referenceName: messageRef.child(id));
   }
 }

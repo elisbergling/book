@@ -1,3 +1,4 @@
+import 'package:book/models/service_data.dart';
 import 'package:book/providers/auth_provider.dart';
 import 'package:book/screens/auth/signup_screen_widgets/or_divider.dart';
 import 'package:book/widgets/my_text_field.dart';
@@ -17,13 +18,13 @@ class SignUpScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    final authState = ref.watch(authProvider);
-    final nameController = useTextEditingController();
-    final userNameController = useTextEditingController();
-    final emailController = useTextEditingController();
-    final passowrdController = useTextEditingController();
-    final confirmPassowrdController = useTextEditingController();
-    final isSignUp = useState(true);
+    final ServiceData authState = ref.watch(authProvider);
+    final TextEditingController nameController = useTextEditingController();
+    final TextEditingController userNameController = useTextEditingController();
+    final TextEditingController emailController = useTextEditingController();
+    final TextEditingController passowrdController = useTextEditingController();
+    final TextEditingController confirmPassowrdController = useTextEditingController();
+    final ValueNotifier<bool> isSignUp = useState(true);
     return Scaffold(
       backgroundColor: MyColors.black,
       appBar: const MyBackButtonAppBar(),
@@ -38,7 +39,7 @@ class SignUpScreen extends HookConsumerWidget {
                   controller: nameController,
                   labelText: 'Name',
                   keyBoardType: TextInputType.name,
-                  validator: (value) =>
+                  validator: (String? value) =>
                       value!.isEmpty ? 'Name can\'t be empty' : null,
                 ),
               if (isSignUp.value)
@@ -46,7 +47,7 @@ class SignUpScreen extends HookConsumerWidget {
                   controller: userNameController,
                   labelText: 'Username',
                   keyBoardType: TextInputType.name,
-                  validator: (value) {
+                  validator: (String? value) {
                     if (value!.isEmpty) {
                       return 'Username can\'t be empty';
                     } else if (value.contains(' ')) {
@@ -63,7 +64,7 @@ class SignUpScreen extends HookConsumerWidget {
                 controller: emailController,
                 labelText: 'Email',
                 keyBoardType: TextInputType.emailAddress,
-                validator: (value) {
+                validator: (String? value) {
                   if (value!.isEmpty) {
                     return 'Email can\'t be empty';
                   } else if (!EmailValidator.validate(value)) {
@@ -77,7 +78,7 @@ class SignUpScreen extends HookConsumerWidget {
                 controller: passowrdController,
                 labelText: 'Password',
                 obscureText: true,
-                validator: (value) {
+                validator: (String? value) {
                   if (value!.isEmpty) {
                     return 'Password can\'t be empty';
                   } else if (value.length < 8) {
@@ -91,7 +92,7 @@ class SignUpScreen extends HookConsumerWidget {
                   controller: confirmPassowrdController,
                   labelText: 'Confirm Password',
                   obscureText: true,
-                  validator: (value) {
+                  validator: (String? value) {
                     if (value!.isEmpty) {
                       return 'Confiramtion password can\'t be empty';
                     } else if (passowrdController.text != value) {

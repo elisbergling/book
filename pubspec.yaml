@@ -41,10 +41,16 @@ dependencies:
   font_awesome_flutter:
   cached_network_image: 
   uuid:
+  timeago:
   image_picker: 
   email_validator:
   permission_handler:
+  location:
+  geocoding:
+  geolocator:
+  geoflutterfire2:
   google_maps_flutter: 
+  google_maps_flutter_platform_interface:
   google_fonts: 
   firebase_auth: 
   firebase_core: 

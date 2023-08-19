@@ -17,7 +17,7 @@ class AddBookScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SubmitButton(
-            onPressed: () => Navigator.of(context).push(
+            onPressed: () async => await Navigator.of(context).push(
               MyRoutes.fromRigth(const ScanBookScreen()),
             ),
             heigth: 40,
@@ -34,7 +34,7 @@ class AddBookScreen extends StatelessWidget {
           ActionButton(
             text: 'Enter Details Manually',
             isFilled: false,
-            onPressed: () => Navigator.of(context).push(
+            onPressed: () async => await Navigator.of(context).push(
               MyRoutes.fromRigth(const EnterDetailsManuallyScreen()),
             ),
           ),

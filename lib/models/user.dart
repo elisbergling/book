@@ -1,4 +1,3 @@
-import 'package:book/models/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyUser {
@@ -6,10 +5,9 @@ class MyUser {
   final String name;
   final String username;
   final String email;
-  final String profileImageUrl;
-  final List<String> bookIds;
-  final List<String> followingUserIds;
-  final Location location;
+  final String? profileImageUrl;
+  final List<String> conversationUids;
+  final List<String> followingUids;
 
   MyUser({
     required this.uid,
@@ -17,35 +15,32 @@ class MyUser {
     required this.username,
     required this.email,
     required this.profileImageUrl,
-    required this.bookIds,
-    required this.followingUserIds,
-    required this.location,
+    required this.conversationUids,
+    required this.followingUids,
   });
 
-  factory MyUser.fromJson(DocumentSnapshot doc) {
-    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  factory MyUser.fromMap(DocumentSnapshot doc) {
+    final Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     return MyUser(
-      uid: data['uid'],
-      name: data['name'],
-      username: data['username'],
-      email: data['email'],
-      profileImageUrl: data['profileImageUrl'],
-      bookIds: List<String>.from(data['bookIds']),
-      followingUserIds: List<String>.from(data['followingUserIds']),
-      location: Location.fromJson(data['location']),
+      uid: map['uid'],
+      name: map['name'],
+      username: map['username'],
+      email: map['email'],
+      profileImageUrl: map['profileImageUrl'],
+      conversationUids: List<String>.from(map['conversationUids']),
+      followingUids: List<String>.from(map['followingUids']),
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'uid': uid,
       'name': name,
       'username': username,
       'email': email,
       'profileImageUrl': profileImageUrl,
-      'bookIds': bookIds,
-      'followingUserIds': followingUserIds,
-      'location': location.toJson(),
+      'conversationUids': conversationUids,
+      'followingUids': followingUids,
     };
   }
 }

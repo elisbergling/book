@@ -1,18 +1,25 @@
-import 'package:book/mock/mock_books.dart';
+import 'package:book/providers/book_providers.dart';
+import 'package:book/providers/state_provider.dart';
 import 'package:book/screens/home/explore_screen_widgets/book_card.dart';
 import 'package:book/screens/home/explore_screen_widgets/chip_row_botton.dart';
 import 'package:book/screens/home/explore_screen_widgets/filter_dialog.dart';
 import 'package:book/style/colors.dart';
+import 'package:book/widgets/error_widget.dart';
+import 'package:book/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ExploreScreen extends StatelessWidget {
+class ExploreScreen extends ConsumerWidget {
   const ExploreScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final myBooks = ref.watch(allBooksProvider);
     return Scaffold(
       backgroundColor: MyColors.black,
       body: CustomScrollView(
+        key: GlobalKey(debugLabel: 'Explore'),
+        physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
             elevation: 20,
@@ -75,11 +82,14 @@ class ExploreScreen extends StatelessWidget {
                               color: MyColors.darkGrey,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const TextField(
-                              style: TextStyle(
+                            child: TextField(
+                              onChanged: (value) => ref
+                                  .read(queryTextProvider.notifier)
+                                  .state = value,
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 border: InputBorder.none,
                                 prefixIcon: Icon(
                                   Icons.search,
@@ -101,9 +111,10 @@ class ExploreScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: IconButton(
-                              onPressed: () => showModalBottomSheet(
+                              onPressed: () async => await showModalBottomSheet(
                                 context: context,
-                                builder: (context) => const FilterDialog(),
+                                builder: (BuildContext context) =>
+                                    const FilterDialog(),
                                 elevation: 30,
                                 shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.vertical(
@@ -127,12 +138,21 @@ class ExploreScreen extends StatelessWidget {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return BookCard(book: mockBooks[index], onTap: () {});
-              },
-              childCount: mockBooks.length,
+          myBooks.when(
+            error: (e, s) => SliverList(
+              delegate: SliverChildListDelegate([
+                MyErrorWidget(e: e, s: s),
+              ]),
+            ),
+            loading: () => SliverList(
+              delegate: SliverChildListDelegate([
+                const LoadingWidget(),
+              ]),
+            ),
+            data: (books) => SliverList.builder(
+              itemCount: books.length,
+              itemBuilder: (context, index) =>
+                  BookCard(book: books[index], onTap: () {}), //FIX
             ),
           ),
           const SliverToBoxAdapter(

@@ -1,4 +1,3 @@
-import 'package:book/mock/mock_locations.dart';
 import 'package:book/models/user.dart';
 import 'package:book/screens/home/book_screen_widgets/location_widget.dart';
 import 'package:book/screens/home/messaging_screen.dart';
@@ -28,7 +27,7 @@ class SellerInfoCard extends StatelessWidget {
         child: InkWell(
           onTap: isPreview
               ? () {}
-              : () => Navigator.of(context)
+              : () async => await Navigator.of(context)
                   .push(MyRoutes.fromRigth(const ProfileScreen(isOwn: false))),
           child: Container(
             height: 80,
@@ -61,17 +60,17 @@ class SellerInfoCard extends StatelessWidget {
                 Expanded(child: Container()),
                 CircularButton(
                   icon: Icons.message_outlined,
-                  onPressed: () => Navigator.of(context)
+                  onPressed: () async => await Navigator.of(context)
                       .push(MyRoutes.fromRigth(MessagingScreen(
                     user: MyUser(
+                      //FIX
                       uid: '56',
                       name: 'TIM',
                       username: 'vdfvd',
                       email: 'svf',
                       profileImageUrl: '',
-                      bookIds: [],
-                      followingUserIds: [],
-                      location: mockLocations[0],
+                      followingUids: [],
+                      conversationUids: [],
                     ),
                   ))),
                   dark: false,

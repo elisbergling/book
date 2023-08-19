@@ -1,139 +1,115 @@
 import 'package:book/models/user.dart';
-import 'package:book/providers/image_provider.dart';
+import 'package:book/providers/auth_provider.dart';
+import 'package:book/providers/providers.dart';
+import 'package:book/services/service_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class UserService with ChangeNotifier {
-  UserService({
-    required this.uid,
-  });
-  final String? uid;
+class UserService extends ServiceNotifier {
+  late final String? uid = ref.watch(firebaseAuthProvider).currentUser?.uid;
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-  String error = '';
+  late final CollectionReference userCollection =
+      ref.watch(firebaseFirestoreProvider).collection('users');
 
-  CollectionReference userCollection =
-      FirebaseFirestore.instance.collection('users');
-
-  Stream<MyUser>? userStream() {
+  Stream<MyUser> userStream() {
     try {
       return userCollection
           .doc(uid)
           .snapshots()
-          .map((doc) => MyUser.fromJson(doc));
-    } on Exception catch (exception, _) {
-      print(exception);
-      error = exception.toString();
-      notifyListeners();
-      return null;
+          .map((doc) => MyUser.fromMap(doc));
+    } catch (e) {
+      setError(e);
+      return const Stream.empty();
     }
   }
 
-  Stream<List<MyUser>>? usersStream({required String name}) {
+  Stream<List<MyUser>> usersStream({required String name}) {
     try {
       return userCollection
           .where('username', isEqualTo: name)
           .snapshots()
-          .map((event) => event.docs.map((e) => MyUser.fromJson(e)).toList());
-    } on Exception catch (exception, _) {
-      print(exception);
-      error = exception.toString();
-      notifyListeners();
-      return null;
+          .map((event) => event.docs.map((e) => MyUser.fromMap(e)).toList());
+    } catch (e) {
+      setError(e);
+      return Stream.value([]);
     }
   }
 
-  Future<List<MyUser>?> usersFuture({required String name}) async {
+  Stream<List<MyUser>> conversationUsersStream() {
     try {
-      _isLoading = true;
-      notifyListeners();
+      return userCollection
+          .where('conversationUids', arrayContains: uid)
+          .snapshots()
+          .map((event) => event.docs.map((e) => MyUser.fromMap(e)).toList());
+    } catch (e) {
+      setError(e);
+      return Stream.value([]);
+    }
+  }
+
+  Future<MyUser?> myUserFuture() async {
+    return userFuture(uid: uid!);
+  }
+
+  Future<MyUser?> userFuture({required String uid}) async {
+    try {
+      toggleLoading();
+      final userJson = await userCollection.doc(uid).get();
+      if (!userJson.exists) throw Exception();
+      return MyUser.fromMap(userJson);
+    } catch (e) {
+      setError(e);
+      return null;
+    } finally {
+      toggleLoading();
+    }
+  }
+
+  Future<List<MyUser>?> getUsersFuture({required String name}) async {
+    try {
+      toggleLoading();
       return await userCollection
           .where('username', isEqualTo: name)
           .get()
-          .then((event) => event.docs.map((e) => MyUser.fromJson(e)).toList());
-    } on Exception catch (exception, _) {
-      print(exception);
-      error = exception.toString();
-      notifyListeners();
+          .then((event) => event.docs.map((e) => MyUser.fromMap(e)).toList());
+    } catch (e) {
+      setError(e);
       return null;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
     }
   }
 
-  Future<MyUser?> getUserFuture() async {
+  Future<void> createUser({required MyUser user}) async {
     try {
-      _isLoading = true;
-      notifyListeners();
-      final userJson = await userCollection.doc(uid).get();
-      return MyUser.fromJson(userJson);
-    } on Exception catch (exception, _) {
-      print(exception);
-      error = exception.toString();
-      notifyListeners();
-      return null;
+      toggleLoading();
+      await userCollection.doc(user.uid).set(user.toMap());
+    } catch (e) {
+      setError(e);
+      rethrow;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
+    }
+  }
+
+  Future<void> updateUser({required MyUser user}) async {
+    try {
+      toggleLoading();
+      await userCollection.doc(user.uid).update(user.toMap());
+    } catch (e) {
+      setError(e);
+    } finally {
+      toggleLoading();
     }
   }
 
   Future<void> deleteUser() async {
     try {
-      _isLoading = true;
-      notifyListeners();
+      toggleLoading();
       await userCollection.doc(uid).delete();
-    } on Exception catch (exception, _) {
-      print(exception);
-      error = exception.toString();
-      notifyListeners();
+    } catch (e) {
+      setError(e);
     } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> updateImgUrl() async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      String? url =
-          await ProviderContainer().read(imageProvider).getDownloadUrl(uid!);
-      if (url == null) {
-        throw Exception('No url');
-      }
-      await userCollection.doc(uid).update({
-        'profileImageUrl': url,
-      });
-    } on Exception catch (exception, _) {
-      print(exception);
-      error = exception.toString();
-      notifyListeners();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> updateName({
-    required String name,
-  }) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      await userCollection.doc(uid).update({
-        'name': name,
-      });
-    } on Exception catch (exception, _) {
-      print(exception);
-      error = exception.toString();
-      notifyListeners();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      toggleLoading();
     }
   }
 }

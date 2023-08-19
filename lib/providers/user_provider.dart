@@ -1,8 +1,11 @@
-import 'package:book/providers/auth_provider.dart';
+import 'package:book/models/service_data.dart';
+import 'package:book/models/user.dart';
 import 'package:book/services/user_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final userProvider = ChangeNotifierProvider<UserService?>((ref) {
-  final auth = ref.watch(authStateChangesProvider);
-  return UserService(uid: auth.value?.uid);
+final userProvider =
+    NotifierProvider<UserService, ServiceData>(() => UserService());
+
+final conversationStreamProvider = StreamProvider<List<MyUser>>((ref) {
+  return ref.watch(userProvider.notifier).conversationUsersStream();
 });

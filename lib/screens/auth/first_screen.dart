@@ -39,8 +39,8 @@ class FirstScreen extends StatelessWidget {
           ),
           Expanded(child: Container()),
           SubmitButton(
-            onPressed: () {
-              Navigator.of(context).push(
+            onPressed: () async {
+              await Navigator.of(context).push(
                 MyRoutes.fromRigth(const SignUpScreen()),
               );
             },

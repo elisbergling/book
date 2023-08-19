@@ -31,16 +31,16 @@ class BookScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final GlobalKey columnKey = GlobalKey();
-    final scrollController = useScrollController();
-    final pageController = usePageController(initialPage: 0);
-    final pictureIndexNotifier = useValueNotifier<int>(0);
-    final backgroundTopOffset = useState(0.0);
-    final showAllBookDescription = useState(false);
-    final showAllInfoDescription = useState(false);
-    final hightState = useState<double>(0);
+    final ScrollController scrollController = useScrollController();
+    final PageController pageController = usePageController(initialPage: 0);
+    final ValueNotifier<int> pictureIndexNotifier = useValueNotifier<int>(0);
+    final ValueNotifier<double> backgroundTopOffset = useState(0.0);
+    final ValueNotifier<bool> showAllBookDescription = useState(false);
+    final ValueNotifier<bool> showAllInfoDescription = useState(false);
+    final ValueNotifier<double> hightState = useState<double>(0);
 
     useEffect(() {
-      listener() {
+      void listener() {
         pictureIndexNotifier.value = pageController.page!.round();
       }
 
@@ -73,7 +73,7 @@ class BookScreen extends HookWidget {
                   child: PageView.builder(
                     controller: pageController,
                     itemCount: book.images.length,
-                    itemBuilder: (context, index) => SizedBox(
+                    itemBuilder: (BuildContext context, int index) => SizedBox(
                       height: MediaQuery.of(context).size.width,
                       child: Image.asset(
                         book.images[index],
@@ -103,7 +103,9 @@ class BookScreen extends HookWidget {
                         ),
                         child: ValueListenableBuilder<int>(
                           valueListenable: pictureIndexNotifier,
-                          builder: (context, value, child) => Row(
+                          builder: (BuildContext context, int value,
+                                  Widget? child) =>
+                              Row(
                             children: [
                               for (int i = 0; i < book.images.length; i++)
                                 AnimatedContainer(
@@ -145,7 +147,8 @@ class BookScreen extends HookWidget {
                       )
                     ],
                   ),
-                  child: LayoutBuilder(builder: (context, constraints) {
+                  child: LayoutBuilder(builder:
+                      (BuildContext context, BoxConstraints constraints) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       updateColumnHight(columnKey, hightState);
                     });
@@ -251,7 +254,7 @@ class BookScreen extends HookWidget {
                               MyTextButton(
                                 onPressed: () {},
                                 text:
-                                    'Rent for ${book.leasePrice!.round()} kr ${book.leaseTime}',
+                                    'Rent for ${book.rentPrice!.round()} kr ${book.rentTime}',
                                 isFilled: true,
                               ),
                             ],

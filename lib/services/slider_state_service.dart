@@ -36,7 +36,7 @@ class SliderState extends ChangeNotifier {
   }
 
   void cancel() {
-    _tempRating = _realRating ?? 2;
+    _tempRating = _realRating ?? 1;
     _tempDistance = _realDistance ?? 10;
     _tempPrice = _realPrice ?? 100;
     notifyListeners();

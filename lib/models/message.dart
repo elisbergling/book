@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message {
   final String id;
+  final String chatId;
   final String uidFrom;
   final String uidTo;
   final String text;
@@ -16,6 +17,7 @@ class Message {
 
   Message({
     required this.id,
+    required this.chatId,
     required this.uidFrom,
     required this.uidTo,
     required this.text,
@@ -25,27 +27,64 @@ class Message {
     required this.photoUrl,
   });
 
-  factory Message.fromJson(Map<String, dynamic> json) {
+  factory Message.fromMap(DocumentSnapshot doc) {
+    final Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     return Message(
-      id: json['id'],
-      uidFrom: json['uidFrom'],
-      uidTo: json['uidTo'],
-      isLiked: json['isLiked'],
-      isRead: json['isRead'],
-      photoUrl: json['photoUrl'],
-      text: json['text'],
-      time: json['time'] as Timestamp,
+      id: map['id'],
+      chatId: map['chatId'],
+      uidFrom: map['uidFrom'],
+      uidTo: map['uidTo'],
+      isLiked: map['isLiked'],
+      isRead: map['isRead'],
+      photoUrl: map['photoUrl'],
+      text: map['text'],
+      time: map['time'] as Timestamp,
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'uidFrom': uidFrom,
-        'uidTo': uidTo,
-        'text': text,
-        'time': time,
-        'isLiked': isLiked,
-        'isRead': isRead,
-        'photoUrl': photoUrl
-      };
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'chatId': chatId,
+      'uidFrom': uidFrom,
+      'uidTo': uidTo,
+      'text': text,
+      'time': time,
+      'isLiked': isLiked,
+      'isRead': isRead,
+      'photoUrl': photoUrl
+    };
+  }
+
+  Message copyWith({
+    String? id,
+    String? chatId,
+    String? uidFrom,
+    String? uidTo,
+    String? text,
+    Timestamp? time,
+    bool? isLiked,
+    bool? isRead,
+    String? photoUrl,
+  }) {
+    return Message(
+      id: id ?? this.id,
+      chatId: chatId ?? this.chatId,
+      uidFrom: uidFrom ?? this.uidFrom,
+      uidTo: uidTo ?? this.uidTo,
+      text: text ?? this.text,
+      time: time ?? this.time,
+      isLiked: isLiked ?? this.isLiked,
+      isRead: isRead ?? this.isRead,
+      photoUrl: photoUrl ?? this.photoUrl,
+    );
+  }
+
+  Message hasRead() {
+    return copyWith(isRead: true);
+  }
+
+  Message toggleLike() {
+    return copyWith(isLiked: !isLiked);
+  }
 }

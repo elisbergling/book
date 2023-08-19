@@ -1,40 +1,19 @@
-import 'package:book/mock/mock_locations.dart';
-import 'package:book/models/service_data.dart';
 import 'package:book/models/user.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:book/providers/auth_provider.dart';
+import 'package:book/providers/user_provider.dart';
+import 'package:book/services/service_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AuthService extends Notifier<ServiceData> {
-  @override
-  ServiceData build() {
-    return const ServiceData(
-      error: '',
-      isLoading: false,
-    );
-  }
-
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
-  final CollectionReference userCollection =
-      FirebaseFirestore.instance.collection('users');
-
-  void toggleLoading() {
-    state = state.copyWith(isLoading: !state.isLoading);
-  }
-
-  void setError(String error) {
-    print(error);
-    state = state.copyWith(error: error);
-  }
+class AuthService extends ServiceNotifier {
+  late final FirebaseAuth auth = ref.watch(firebaseAuthProvider);
 
   Future<void> logOut() async {
     try {
       toggleLoading();
       await auth.signOut();
-    } on Exception catch (exception, _) {
-      setError(exception.toString());
+    } catch (e) {
+      setError(e);
     } finally {
       toggleLoading();
     }
@@ -46,7 +25,7 @@ class AuthService extends Notifier<ServiceData> {
   }) async {
     try {
       toggleLoading();
-      final res = await auth.signInWithEmailAndPassword(
+      final UserCredential res = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -58,11 +37,8 @@ class AuthService extends Notifier<ServiceData> {
         setError('Wrong password provided for that user.');
       }
       return null;
-    } on Exception catch (exception, _) {
-      setError(exception.toString());
-      return null;
     } catch (e) {
-      setError(e.toString());
+      setError(e);
       return null;
     } finally {
       toggleLoading();
@@ -72,10 +48,10 @@ class AuthService extends Notifier<ServiceData> {
   Future<User?> signUpAnonymously() async {
     try {
       toggleLoading();
-      final res = await auth.signInAnonymously();
+      final UserCredential res = await auth.signInAnonymously();
       return res.user;
-    } on Exception catch (exception, _) {
-      setError(exception.toString());
+    } catch (e) {
+      setError(e);
       return null;
     } finally {
       toggleLoading();
@@ -90,7 +66,7 @@ class AuthService extends Notifier<ServiceData> {
   }) async {
     try {
       toggleLoading();
-      final res = await auth.createUserWithEmailAndPassword(
+      final UserCredential res = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -99,12 +75,11 @@ class AuthService extends Notifier<ServiceData> {
         name: name,
         username: username,
         email: email,
-        bookIds: [],
-        followingUserIds: [],
-        location: mockLocations[0],
+        followingUids: [],
+        conversationUids: [],
         profileImageUrl: '',
       );
-      await userCollection.doc(res.user?.uid).set(user.toJson());
+      await ref.read(userProvider.notifier).createUser(user: user);
       return res.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -113,11 +88,8 @@ class AuthService extends Notifier<ServiceData> {
         setError('The account already exists for that email.');
       }
       return null;
-    } on Exception catch (exception, _) {
-      setError(exception.toString());
-      return null;
     } catch (e) {
-      setError(e.toString());
+      setError(e);
       return null;
     } finally {
       toggleLoading();
@@ -128,19 +100,33 @@ class AuthService extends Notifier<ServiceData> {
     try {
       toggleLoading();
       GoogleSignIn gs = GoogleSignIn();
-      final googleUser = await gs
-          .signIn()
-          .onError((error, stackTrace) => throw Exception(error.toString()));
-      final googleAuth = await googleUser?.authentication;
-      final credential = GoogleAuthProvider.credential(
+      final GoogleSignInAccount? googleUser = await gs.signIn().onError(
+          (Object? error, StackTrace stackTrace) =>
+              throw Exception(error.toString()));
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      final res = await auth.signInWithCredential(credential);
+      final UserCredential res = await auth.signInWithCredential(credential);
+      final user =
+          await ref.read(userProvider.notifier).userFuture(uid: res.user!.uid);
+      if (user != null) {
+        MyUser myUser = MyUser(
+          uid: res.user!.uid,
+          name: res.user!.displayName!,
+          username: res.user!.email!,
+          email: res.user!.email!,
+          profileImageUrl: res.user!.photoURL!,
+          followingUids: [],
+          conversationUids: [],
+        );
+        await ref.read(userProvider.notifier).createUser(user: myUser);
+      }
       return res.user;
-    } on Exception catch (exception, _) {
-      setError(exception.toString());
-
+    } catch (e) {
+      setError(e);
       return null;
     } finally {
       toggleLoading();

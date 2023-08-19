@@ -27,14 +27,14 @@ class ChipState extends ChangeNotifier {
   late Map<ChipType, List<MyChip>> realState = _deepCopy(_startState);
 
   bool isMarked(MyChip chip) {
-    return tempState[chip.type]!.any((element) => element.label == chip.label);
+    return tempState[chip.type]!.any((MyChip element) => element.label == chip.label);
   }
 
   void toogle(MyChip chip) {
     ChipType type = isAddBook ? ChipType.language : ChipType.sortBy;
     if (isMarked(chip) && chip.type != type) {
       tempState[chip.type]!
-          .removeWhere((element) => element.label == chip.label);
+          .removeWhere((MyChip element) => element.label == chip.label);
     } else {
       if (chip.type == type) {
         tempState[chip.type]!.clear();
@@ -55,10 +55,10 @@ class ChipState extends ChangeNotifier {
   }
 
   List<MyChip> _deepCopyList(List<MyChip> list) {
-    return list.map((chip) => MyChip.copy(chip)).toList();
+    return list.map((MyChip chip) => MyChip.copy(chip)).toList();
   }
 
   Map<ChipType, List<MyChip>> _deepCopy(Map<ChipType, List<MyChip>> map) {
-    return map.map((key, value) => MapEntry(key, _deepCopyList(value)));
+    return map.map((ChipType key, List<MyChip> value) => MapEntry(key, _deepCopyList(value)));
   }
 }
